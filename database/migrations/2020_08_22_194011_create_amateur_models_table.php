@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateModelsTable extends Migration
+class CreateAmateurModelsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,22 +13,22 @@ class CreateModelsTable extends Migration
      */
     public function up()
     {
-        Schema::create('models', function (Blueprint $table) {
+        Schema::create('amateur_models', function (Blueprint $table) {
             $table->id();
-            $table->string('username');
-            $table->string('first_name')->nullable();
+            $table->string('model_name');
+            $table->string('last_name')->nullable();
+            $table->string('link_img')->nullable();
             $table->enum('available',['yes', 'not'])->nullable();
             $table->tinyInteger('age')->nullable();
-            $table->date('registered_at')->nullable();
-            $table->bigInteger('n_videos')->nullable();
-            $table->bigInteger('n_visual')->nullable();
-            $table->bigInteger('subscribers')->nullable();
-            $table->integer('last_month_rank')->nullable();
+            $table->date('birth_date')->nullable();
+            $table->date('joined')->nullable();
+            $table->string('video')->nullable();
+            $table->string('visual')->nullable();
+            $table->string('subscriber')->nullable();
             $table->string('modelHub')->nullable();
             $table->string('official_site')->nullable();
             $table->string('twitter')->nullable();
-            $table->string('fanCentro')->nullable();
-            $table->string('snapchat')->nullable();
+            $table->string('fan_centro')->nullable();
             $table->string('instagram')->nullable();
             $table->timestamps();
         });
@@ -41,6 +41,6 @@ class CreateModelsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('models');
+        Schema::dropIfExists('amateur_models');
     }
 }

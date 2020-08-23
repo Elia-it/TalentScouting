@@ -24,3 +24,6 @@ Route::view('/pages/blank', 'pages.blank');
 
 
 Route::get('/test', 'ModelController@index');
+
+Route::get('/Scraping', 'Test@models');
+

@@ -70,8 +70,8 @@ class ParsingModelCommand extends Command
                     'video' => $model['videos'],
                     'visual' => $model['visuals'],
                     'subscriber' => $model['subscribers'],
-                    'modelHub' => $model['modelHub'],
-                    'official_site' => $model['official_site'],
+                    'modelhub' => $model['modelHub'],
+                    'website' => $model['official_site'],
                     'twitter' => $model['twitter'],
                     'fan_centro' => $model['fan_centro'],
                     'instagram' => $model['instagram']

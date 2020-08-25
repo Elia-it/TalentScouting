@@ -11,7 +11,7 @@ class AmateurModel extends Model
     protected $table = 'amateur_models';
 
     protected $fillable = [
-        'model_name', 'last_name', 'link_img', 'available', 'age', 'birth_date', 'joined', 'video', 'visual', 'subscriber', 'modelHub', 'official_site', 'twitter', 'fan_centro', 'instagram'
+        'model_name', 'last_name', 'link_img', 'available', 'age', 'birth_date', 'joined', 'video', 'visual', 'subscriber', 'modelhub', 'website', 'twitter', 'fan_centro', 'instagram'
     ];
 
 //    protected $casts = [
@@ -21,4 +21,5 @@ class AmateurModel extends Model
     public function rank(){
         return $this->hasMany('App\ModelRank', 'model_id', 'id');
     }
+
 }

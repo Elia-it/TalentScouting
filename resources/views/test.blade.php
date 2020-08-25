@@ -1,51 +1,26 @@
 @extends('layouts.simple')
 
 @section('content')
-    @foreach($models as $model)
-
-        @if($model['available'] == 'yes')
-
-            <img src="{{$model['link_img']}}"><h2>
-                Weekly{{$model->rank[0]->weekly}}# <br>
-                Monthly{{$model->rank[0]->monthly}}# <br>
-                Yearly {{$model->rank[0]->yearly}} <br>
-                Last month{{$model->rank[0]->last_month}}# <br>
-
-            </h2>
-            <h3>{{$model['modelName']}} @if(isset($model['last_name'])) {{$model['last_name']}}@endif</h3>
-            Age:{{$model['age']}};
-            <br>
-            Birth date: {{$model['birth_date']}}
-            <br>
-            Modelhub site: {{$model['modelHub']}}
-            <br>
-            Official site: {{$model['official_site']}}
-            <br>
-            Instagram: {{$model['instagram']}}
-            <br>
-            Twitter: {{$model['twitter']}}
-            <br>
-            Fan Centro: {{$model['fan_centro']}}
-            <br>
-            Visual video: {{$model['n_video_visual']}}
-            <br>
-            Subscribers: {{$model['subscribers']}}
-            <br>
-            Joined: {{$model['joined']}}
-            <br>
-
-            Rank:{{$model['monthly_ranking']}};
-            <br>
-            <hr>
-
-        @elseif($model['available'] == 'not')
-            <img src="{{$model['link_img']}}">
-            <h3>{{$model['modelName']}}</h3>
-            <small>Not Available</small>
-            <hr>
-        @endif
-
-    @endforeach
-
+    <li class="modelLi">
+        <div class="wrap">
+            <div class="subscribe-to-pornstar-icon display-none">
+                <button type="button" data-title="Iscriviti alla Pornostar" class="tooltipTrig" onclick="return false;"><span></span></button>
+            </div>
+            <a class="js-mxp" data-mxptype="Pornstar" data-mxptext="Eva Elfie" href="/model/eva-elfie">
+            <span class="pornstar_label">
+                <span class="title-album">
+                    <span class="rank_number"> 						1					</span>
+                    <hr class="noChange">
+                </span>
+            </span>
+                <img data-thumb_url="https://di.phncdn.com/pics/users/683/394/291/avatar1551823518/(m=eidYGCjadqg)(mh=CfsySYPgm_-8kI8P)200x200.jpg" src="https://di.phncdn.com/pics/users/683/394/291/avatar1551823518/(m=eidYGCjadqg)(mh=CfsySYPgm_-8kI8P)200x200.jpg" alt="Eva Elfie">         </a>
+            <div class="thumbnail-info-wrapper">
+                    <a href="/model/eva-elfie" class="title js-mxp" data-mxptype="Pornstar" data-mxptext="Eva Elfie">
+                    <span class="modelName">                     Eva <span class="lastName">Elfie<span class="modelBadges">
+                    <span class="modelBadges"><span class="verifiedPornstar tooltipTrig" data-title="Amatoriali Verificati"><i class="verifiedIcon"></i></span></span></span>                </span>             </span></a>
+                <span class="videosNumber">55 Video                367M visualizzazioni </span>
+            </div>
+        </div>
+    </li>
 
 @endsection

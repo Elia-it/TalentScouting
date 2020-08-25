@@ -10,6 +10,8 @@ class ModelRank extends Model
     //
     protected $table = 'models_ranks';
 
+    public $timestamps = false;
+
     protected $fillable = [
         'model_id', 'weekly', 'last_month', 'monthly', 'yearly', 'rank_by_date'
     ];

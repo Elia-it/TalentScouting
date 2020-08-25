@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\AmateurModel;
 
 class ModelController extends Controller
 {
@@ -16,9 +16,9 @@ class ModelController extends Controller
     {
 
         //
-        $all_models = parsing_models();
+        $all_models = AmateurModel::all();
 
-        return view('test', compact('all_models'));
+        return view('models', compact('all_models'));
 
     }
 

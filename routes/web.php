@@ -27,3 +27,4 @@ Route::get('/test', 'ModelController@index');
 
 Route::get('/Scraping', 'Test@models');
 
+Route::get('/models', 'ModelController@index')->name('models');

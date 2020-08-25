@@ -11,11 +11,10 @@ function get_parsing_models($page){
     );
     $all_models = [];
 
-
        for ($counter = 1; $counter <= $page; $counter++) {
 
 
-        $content = file_get_html('https://it.pornhub.com/pornstars?o=t&performerType=amateur&page=1', false, $context);
+        $content = file_get_html('https://it.pornhub.com/pornstars?o=t&performerType=amateur&page='. $page . '', false, $context);
 
         preg_match_all('/<li class=\"modelLi\">(.*?)<\/li>/', $content, $models);
 
@@ -53,7 +52,7 @@ function get_parsing_models($page){
             //Check if model is available
             if (preg_match('/<div class=\"geoBlocked\">/', $content_profile)) {
                 //Not available
-                $model['available'] = 'not';
+                $model['available'] = 0;
                 $model['age'] = NULL;
                 $model['birth_date'] = NULL;
                 $model['joined'] = NULL;
@@ -75,14 +74,14 @@ function get_parsing_models($page){
                 $model['last_month'] = NULL;
             } else {
                 //Available
-                $model['available'] = 'yes';
+                $model['available'] = 1;
 
 
                 //Birth Date
                 if (preg_match('/<span itemprop=\"birthDate\" class=\"smallInfo\">(.*?)<\/span/', $content_profile, $birthDate)) {
                     $model['birth_date'] = date('Y/m/d', strtotime(ucwords(strtolower(trim($birthDate[1])))));
                 } else {
-                    $model['birth_date'] = "";
+                    $model['birth_date'] = NULL;
                 }
 
                 //age
@@ -102,19 +101,22 @@ function get_parsing_models($page){
                 //Numbers of videos
                 preg_match('/<div class=\"showingCounter pornstarVideosCounter\">(.*?)<\/div/', $content_profile, $n_videos);
                 $n_videos_to_convert = trim($n_videos[1]);
-                $model['videos'] = substr($n_videos_to_convert, strpos($n_videos_to_convert, 'of') + 3);
+                $videos = substr($n_videos_to_convert, strpos($n_videos_to_convert, 'of') + 3);
+                $model['videos'] = intval($videos);
 
 
                 //Visual for all videos
                 preg_match('/<div class=\"tooltipTrig infoBox videoViews\"(.*?)<\/span>/', $content_profile, $n_video_visual);
-                $str_n_video_visual = trim($n_video_visual[1]);
-                $model['visuals'] = trim(substr($str_n_video_visual, strpos($str_n_video_visual, '"big">') + 6));
-
+                //$str_n_video_visual = trim($n_video_visual[1]);
+                //$model['visuals'] = trim(substr($str_n_video_visual, strpos($str_n_video_visual, '"big">') + 6));
+                preg_match('/data-title=\"Video\sviews:\s(.*?)\"/', $n_video_visual[1], $n_visual);
+                $model['visuals'] = intval(str_replace(',', '', $n_visual[1]));
 
                 //Subscribers
                 preg_match('/<\/div>\W+<div class=\"infoBox\">\s+(.*?)<\/span/', $content_profile, $n_subscribers);
                 $str_subscribers = trim($n_subscribers[1]);
-                $model['subscribers'] = trim(substr($str_subscribers, strpos($str_subscribers, '"big">') + 6));
+                $subscriber_to_convert  = trim(substr($str_subscribers, strpos($str_subscribers, '"big">') + 6));
+                $model['subscribers'] = intval(format_num_to_thousands($subscriber_to_convert));
 
 
                 //Joined (date from today)
@@ -169,7 +171,7 @@ function get_parsing_models($page){
                         }
                     }
                     if (empty($model['modelHub'])) {
-                        $model['modelHub'] = "N/D";
+                        $model['modelHub'] = NULL;
                     }
 
 
@@ -181,7 +183,7 @@ function get_parsing_models($page){
                         }
                     }
                     if (empty($model['official_site'])) {
-                        $model['official_site'] = "N/D";
+                        $model['official_site'] = NULL;
                     }
 
                     //Twitter
@@ -190,7 +192,7 @@ function get_parsing_models($page){
                         $model['twitter'] = $twitter[1];
                     }
                     if (empty($model['twitter'])) {
-                        $model['twitter'] = "N/D";
+                        $model['twitter'] = NULL;
                     }
 
                     //Instagram
@@ -199,7 +201,7 @@ function get_parsing_models($page){
                         $model['instagram'] = $instagram[1];
                     }
                     if (empty($model['instagram'])) {
-                        $model['instagram'] = "N/D";
+                        $model['instagram'] = NULL;
                     }
 
                     //Fan Centro
@@ -208,7 +210,7 @@ function get_parsing_models($page){
                         $model['fan_centro'] = $fanCentro[1];
                     }
                     if (empty($model['fan_centro'])) {
-                        $model['fan_centro'] = "N/D";
+                        $model['fan_centro'] = NULL;
                     }
 
 
@@ -216,7 +218,6 @@ function get_parsing_models($page){
 
             }
             $all_models[] = $model;
-
         }
 
 

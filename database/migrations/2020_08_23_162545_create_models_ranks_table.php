@@ -21,7 +21,7 @@ class CreateModelsRanksTable extends Migration
             $table->integer('last_month')->nullable();
             $table->integer('yearly')->nullable();
             $table->timestamp('rank_by_date');
-            $table->timestamps();
+            // $table->timestamps();
         });
     }
 

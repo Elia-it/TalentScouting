@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\simple_html_dom;
 use Sunra\PhpSimple\HtmlDomParser;
 use App\AmateurModel;
+use App\Pornhub;
 
 class Test extends Controller
 {
@@ -297,5 +298,13 @@ class Test extends Controller
         return 'Done!';
 
 //        return view('test', compact('all_models'));
+    }
+
+    public function test_mo(){
+        $models = AmateurModel::all()->get();
+
+
+
+        return view('test');
     }
 }

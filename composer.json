@@ -42,7 +42,6 @@
             "database/factories"
         ],
         "files": [
-            "app/Util/simple_html_dom.php",
             "app/Util/parsing_info_models.php",
             "app/Util/util.php"
         ]

@@ -11,7 +11,7 @@ class AmateurModel extends Model
     protected $table = 'amateur_models';
 
     protected $fillable = [
-        'model_name', 'last_name', 'link_img', 'available', 'age', 'birth_date', 'joined', 'video', 'visual', 'subscriber', 'modelhub', 'website', 'twitter', 'fan_centro', 'instagram'
+        'full_name', 'last_name', 'link_img', 'available', 'age', 'birth_date', 'joined', 'video', 'visual', 'subscriber', 'modelhub', 'website', 'twitter', 'fan_centro', 'instagram'
     ];
 
 //    protected $casts = [

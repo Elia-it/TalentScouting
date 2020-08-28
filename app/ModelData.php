@@ -5,15 +5,15 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\AmateurModel;
 
-class ModelRank extends Model
+class ModelData extends Model
 {
     //
-    protected $table = 'models_ranks';
+    protected $table = 'models_data';
 
     public $timestamps = false;
 
     protected $fillable = [
-        'model_id', 'weekly', 'last_month', 'monthly', 'yearly', 'rank_by_date'
+        'model_id', 'weekly', 'last_month', 'monthly', 'yearly', 'rank_by_date', 'video', 'visual', 'subscriber'
     ];
 
 

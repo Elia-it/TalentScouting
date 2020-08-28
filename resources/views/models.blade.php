@@ -36,7 +36,7 @@
                         <div class="row align-items-center">
                             <div class="col-sm-6 py-10">
                                 <h3 class="h5 font-w700 mb-10">
-                                    <img class="img-avatar img-avatar96 img-avatar-thumb" src="{{$model->link_img}}" alt=""> {{$model->model_name . " " . $model->last_name}}
+                                    <img class="img-avatar img-avatar96 img-avatar-thumb" src="{{$model->link_img}}" alt=""> {{$model->full_name}}
                                 </h3>
                                 @if($model->available == 0)
                                     <p class="font-size-sm text-muted mb-0">

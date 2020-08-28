@@ -1,20 +1,12 @@
 <?php
 function get_parsing_models($page){
-    $context = stream_context_create(
-        array (
-            'http' => array (
-                'header' => "User-Agent:MyAgent/1.0\r\n",
-                'follow_location' => false,
-                'max_redirects' => 20
-            )
-        )
-    );
+
     $all_models = [];
 
        for ($counter = 1; $counter <= $page; $counter++) {
 
 
-        $content = file_get_html('https://it.pornhub.com/pornstars?o=t&performerType=amateur&page='. $page . '', false, $context);
+        $content = file_get_contents('https://it.pornhub.com/pornstars?o=t&performerType=amateur&page='. $page . '');
 
         preg_match_all('/<li class=\"modelLi\">(.*?)<\/li>/', $content, $models);
 
@@ -46,7 +38,7 @@ function get_parsing_models($page){
             preg_match('/href=(["])(.*?)\1/', $file_model, $username_model);
 
             $link_profile = "https://www.pornhub.com" . $username_model[2] . "";
-            $content_profile = file_get_html("$link_profile", false, $context);
+            $content_profile = file_get_contents("$link_profile");
 
 
             //Check if model is available

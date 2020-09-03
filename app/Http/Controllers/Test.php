@@ -301,7 +301,25 @@ class Test extends Controller
     }
 
     public function test_mo(){
-        $models = AmateurModel::all()->get();
+
+        $pornhub = new Pornhub();
+        echo '<hr>';
+        echo '<h1>Pornstars</h1>';
+        echo '<hr>';
+//        $pornstars = $pornhub->getPornstarByPage(1);
+//        foreach ($pornstars as $pornostar){
+//            $models = $pornhub->getPornstar($pornostar);
+//            var_dump($models);
+//            echo '<hr>';
+//        }
+//        var_dump($pornstars);
+//        echo '<hr>';
+//        echo '<h1>Models</h1>';
+//        echo '<hr>';
+//        $models = $pornhub->getModelsByPage(1);
+        $pornstars = $pornhub->getPornstarByPage(4);
+        $models = $pornhub->getModelsByPage(4);
+        dd($pornstars, $models);
 
 
 

@@ -19,6 +19,6 @@ class ModelData extends Model
 
     public function amateur_model()
     {
-        return $this->hasManyThrough('App\AmateurModel', 'id', 'model_id');
+        return $this->hasManyThrough('App\PornhubActor', 'id', 'model_id');
     }
 }

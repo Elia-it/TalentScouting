@@ -24,17 +24,13 @@
   <component name="ChangeListManager">
     <list default="true" id="54937674-6673-4798-bd62-63813a3fa9f2" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/AmateurModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/AmateurModel.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/AmateurModel.php" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Console/Commands/ParsingModelCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Console/Commands/ParsingModelCommand.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Test.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Test.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ModelRank.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Util/parsing_info_models.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Util/parsing_info_models.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Util/simple_html_dom.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2020_08_22_194011_create_amateur_models_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2020_08_22_194011_create_amateur_models_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2020_08_23_162545_create_models_ranks_table.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/models.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/models.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ModelData.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/ModelData.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Pornhub.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Pornhub.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2020_08_22_194011_create_amateur_models_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2020_08_22_194011_create_pornhub_actors_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/test.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/test.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -207,7 +203,8 @@
       <workItem from="1598190035161" duration="7872000" />
       <workItem from="1598208766253" duration="2516000" />
       <workItem from="1598214936473" duration="5354000" />
-      <workItem from="1598262236951" duration="48553000" />
+      <workItem from="1598262236951" duration="48696000" />
+      <workItem from="1598998322499" duration="20722000" />
     </task>
     <servers />
   </component>
@@ -227,30 +224,34 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="828" y="367" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1599145926955">
+      <screen x="78" y="23" width="2482" height="1417" />
+    </state>
+    <state x="828" y="367" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/78.23.2482.1417/2560.23.1920.1057@78.23.2482.1417" timestamp="1599145926955" />
     <state x="458" y="215" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1598440136459">
       <screen x="78" y="23" width="1362" height="877" />
     </state>
     <state x="458" y="215" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/78.23.1362.877@78.23.1362.877" timestamp="1598440136459" />
-    <state width="1800" height="330" key="GridCell.Tab.0.bottom" timestamp="1598367509147">
-      <screen x="78" y="23" width="1842" height="1177" />
+    <state width="1800" height="330" key="GridCell.Tab.0.bottom" timestamp="1598631603766">
+      <screen x="78" y="23" width="2482" height="1417" />
     </state>
     <state width="1800" height="330" key="GridCell.Tab.0.bottom/-1020.1223.1440.877/78.23.1842.1177@78.23.1842.1177" timestamp="1598367509147" />
-    <state width="2440" height="502" key="GridCell.Tab.0.bottom/78.23.2482.1417/2560.23.1920.1057@78.23.2482.1417" timestamp="1598131497192" />
-    <state width="1800" height="330" key="GridCell.Tab.0.center" timestamp="1598367509147">
-      <screen x="78" y="23" width="1842" height="1177" />
+    <state width="1800" height="330" key="GridCell.Tab.0.bottom/78.23.2482.1417/2560.23.1920.1057@78.23.2482.1417" timestamp="1598631603766" />
+    <state width="1800" height="330" key="GridCell.Tab.0.center" timestamp="1598631603765">
+      <screen x="78" y="23" width="2482" height="1417" />
     </state>
     <state width="1800" height="330" key="GridCell.Tab.0.center/-1020.1223.1440.877/78.23.1842.1177@78.23.1842.1177" timestamp="1598367509147" />
-    <state width="2440" height="502" key="GridCell.Tab.0.center/78.23.2482.1417/2560.23.1920.1057@78.23.2482.1417" timestamp="1598131497191" />
-    <state width="1800" height="330" key="GridCell.Tab.0.left" timestamp="1598367509146">
-      <screen x="78" y="23" width="1842" height="1177" />
+    <state width="1800" height="330" key="GridCell.Tab.0.center/78.23.2482.1417/2560.23.1920.1057@78.23.2482.1417" timestamp="1598631603765" />
+    <state width="1800" height="330" key="GridCell.Tab.0.left" timestamp="1598631603750">
+      <screen x="78" y="23" width="2482" height="1417" />
     </state>
     <state width="1800" height="330" key="GridCell.Tab.0.left/-1020.1223.1440.877/78.23.1842.1177@78.23.1842.1177" timestamp="1598367509146" />
-    <state width="2440" height="502" key="GridCell.Tab.0.left/78.23.2482.1417/2560.23.1920.1057@78.23.2482.1417" timestamp="1598131497190" />
-    <state width="1800" height="330" key="GridCell.Tab.0.right" timestamp="1598367509147">
-      <screen x="78" y="23" width="1842" height="1177" />
+    <state width="1800" height="330" key="GridCell.Tab.0.left/78.23.2482.1417/2560.23.1920.1057@78.23.2482.1417" timestamp="1598631603750" />
+    <state width="1800" height="330" key="GridCell.Tab.0.right" timestamp="1598631603766">
+      <screen x="78" y="23" width="2482" height="1417" />
     </state>
     <state width="1800" height="330" key="GridCell.Tab.0.right/-1020.1223.1440.877/78.23.1842.1177@78.23.1842.1177" timestamp="1598367509147" />
-    <state width="2440" height="502" key="GridCell.Tab.0.right/78.23.2482.1417/2560.23.1920.1057@78.23.2482.1417" timestamp="1598131497192" />
+    <state width="1800" height="330" key="GridCell.Tab.0.right/78.23.2482.1417/2560.23.1920.1057@78.23.2482.1417" timestamp="1598631603766" />
     <state width="2440" height="502" key="GridCell.Tab.1.bottom" timestamp="1598131497193">
       <screen x="78" y="23" width="2482" height="1417" />
     </state>
@@ -296,11 +297,22 @@
       <screen x="78" y="23" width="2482" height="1417" />
     </state>
     <state x="828" y="370" key="SettingsEditor/78.23.2482.1417/2560.23.1920.1057@78.23.2482.1417" timestamp="1598116605014" />
-    <state x="575" y="224" width="670" height="419" key="search.everywhere.popup" timestamp="1598520551669">
-      <screen x="78" y="23" width="1362" height="877" />
+    <state x="984" y="348" width="670" height="676" key="search.everywhere.popup" timestamp="1599147312074">
+      <screen x="78" y="23" width="2482" height="1417" />
     </state>
     <state x="575" y="224" width="670" height="419" key="search.everywhere.popup/78.23.1362.877@78.23.1362.877" timestamp="1598520551669" />
-    <state x="984" y="348" width="670" height="676" key="search.everywhere.popup/78.23.2482.1417/2560.23.1920.1057@78.23.2482.1417" timestamp="1598202044970" />
+    <state x="984" y="348" width="670" height="676" key="search.everywhere.popup/78.23.2482.1417/2560.23.1920.1057@78.23.2482.1417" timestamp="1599147312074" />
     <state x="984" y="348" width="670" height="676" key="search.everywhere.popup/78.23.2482.1417@78.23.2482.1417" timestamp="1597958478256" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/app/Pornhub.php</url>
+          <line>127</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

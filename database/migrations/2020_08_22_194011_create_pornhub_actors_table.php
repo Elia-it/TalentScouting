@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAmateurModelsTable extends Migration
+class CreatePornhubActorsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,11 @@ class CreateAmateurModelsTable extends Migration
      */
     public function up()
     {
-        Schema::create('amateur_models', function (Blueprint $table) {
+        Schema::create('pornhub_actors', function (Blueprint $table) {
             $table->id();
             $table->string('full_name');
+            $table->enum('type', ['pornstar', 'model']);
+            $table->boolean('verified');
             $table->string('link_img')->nullable();
             $table->boolean('available')->default(0);
             $table->tinyInteger('age')->nullable();
@@ -37,6 +39,6 @@ class CreateAmateurModelsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('amateur_models');
+        Schema::dropIfExists('pornhub_actors');
     }
 }

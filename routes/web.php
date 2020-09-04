@@ -28,5 +28,6 @@ Route::get('/test', 'ModelController@index');
 Route::get('/Scraping', 'Test@models');
 
 Route::get('/models', 'ModelController@index')->name('models');
+Route::get('/pornstars','ModelController@indexPornstar')->name('pornstars');
 
 Route::get('/new_mo', 'Test@test_mo');

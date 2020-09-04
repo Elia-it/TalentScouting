@@ -317,9 +317,8 @@ class Test extends Controller
 //        echo '<h1>Models</h1>';
 //        echo '<hr>';
 //        $models = $pornhub->getModelsByPage(1);
-        $pornstars = $pornhub->getPornstarByPage(4);
-        $models = $pornhub->getModelsByPage(4);
-        dd($pornstars, $models);
+        $pornhub->testScrape();
+
 
 
 

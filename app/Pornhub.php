@@ -273,16 +273,16 @@ class Pornhub
     public function getModelsByPage($page){
 
         $all_models = [];
-        for ($counter = 1; $counter <= $page; $counter++) {
-            $url = 'https://it.pornhub.com/pornstars?o=t&performerType=amateur&page=' . $counter . '';
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array("User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.15) Gecko/20080623 Firefox/2.0.0.15"));
-            curl_setopt($ch, CURLOPT_NOBODY, false);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            $content = curl_exec($ch);
-            curl_close($ch);
+
+        $url = 'https://it.pornhub.com/pornstars?o=t&performerType=amateur&page=' . $page . '';
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array("User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.15) Gecko/20080623 Firefox/2.0.0.15"));
+        curl_setopt($ch, CURLOPT_NOBODY, false);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $content = curl_exec($ch);
+        curl_close($ch);
 
 
 //            preg_match_all('~<a class="js-mxp"(.*?)<span~si', $content, $models);
@@ -292,22 +292,20 @@ class Pornhub
 //                $all_models[] = $username[1];
 //            }
 
-            preg_match_all('~<li class="modelLi">(.*?)</li>~si', $content, $modelLi);
-            foreach ($modelLi[0] as $model_info){
-                $model = [];
-                preg_match('~<a class="js-mxp"(.*?)<span~si', $model_info, $link);
-                preg_match('~href="/model/(.*?)"~si', $link[1], $username);
-                $model['username'] = $username[1];
+        preg_match_all('~<li class="modelLi">(.*?)</li>~si', $content, $modelLi);
+        foreach ($modelLi[0] as $model_info){
+            $model = [];
+            preg_match('~<a class="js-mxp"(.*?)<span~si', $model_info, $link);
+            preg_match('~href="/model/(.*?)"~si', $link[1], $username);
+            $model['username'] = $username[1];
 
-                if(preg_match('~<i class="verifiedIcon"></i>~', $model_info)){
-                    $model['verified'] = 1;
-                }else{
-                    $model['verified'] = 0;
-                }
-
-                $all_models[] = $model;
+            if(preg_match('~<i class="verifiedIcon"></i>~', $model_info)){
+                $model['verified'] = 1;
+            }else{
+                $model['verified'] = 0;
             }
 
+            $all_models[] = $model;
         }
         return $all_models;
     }
@@ -328,16 +326,20 @@ class Pornhub
         $model = [];
 
         $model['type'] = 'model';
+        $model['username'] = $username;
 
       if(preg_match('/<div class=\"geoBlocked\">/', $content)){
           //not available
           $model['model_name'] = str_replace('-', ' ', $username);
           $model['available'] = 0;
       }else {
-          preg_match('/itemprop=\"name\">\s+(.*?)\s{2,}<\/h1>/', $content, $model_name);
           $model['available'] = 1;
+          if(preg_match('/itemprop=\"name\">\s+(.*?)\s{2,}<\/h1>/', $content, $model_name)){
+              $model['model_name'] = $model_name[1];
+          }else{
+              $model['model_name'] = $username;
+          }
 
-          $model['model_name'] = $model_name[1];
 
           //Link img
           if(preg_match('~<img id="getAvatar" src="(.*?)"~', $content, $link_img)){
@@ -347,21 +349,23 @@ class Pornhub
           }
 
           //Age
-          preg_match_all('~<div class="infoPiece">(.*?)</div>~si', $content, $info_piece);
+          if(preg_match_all('~<div class="infoPiece">(.*?)</div>~si', $content, $info_piece)){
+              foreach ($info_piece[1] as $item) {
+                  if (preg_match('~Age~', $item)) {
+                      preg_match('~class="smallInfo">\s+(.*?)</span~', $item, $age);
+                      $model['age'] = trim($age[1]);
+                  }
+                  if (empty($model['age'])) {
+                      $model['age'] = NULL;
+                  }
+                  if (preg_match('~Birth date~', $item)) {
+                      preg_match('~class="smallInfo">\s+(.*?)</span~', $item, $age);
 
-          foreach ($info_piece[1] as $item) {
-              if (preg_match('~Age~', $item)) {
-                  preg_match('~class="smallInfo">\s+(.*?)</span~', $item, $age);
-                  $model['age'] = trim($age[1]);
-              }
-              if (empty($model['age'])) {
-                  $model['age'] = NULL;
-              }
-              if (preg_match('~Birth date~', $item)) {
-                  preg_match('~class="smallInfo">\s+(.*?)</span~', $item, $age);
+                  }
 
               }
-
+          }else{
+              $model['age'] = NULL;
           }
 
           //birth date
@@ -373,125 +377,156 @@ class Pornhub
 
 
           //Ranks
-          preg_match_all('~<div class="infoBox rankDetails">(.*?)</div>~si', $content, $current_rank);
-          foreach ($current_rank[1] as $rank){
+          if(preg_match_all('~<div class="infoBox rankDetails">(.*?)</div>~si', $content, $current_rank)) {
 
-                if(preg_match('~Weekly rank~si', $rank)){
-                    preg_match('~<span class="big">\s{1,}+(.*?)\s{1,}</span>~si', $rank, $week);
-                    if($week[1] == 'N/A'){
-                        $model['weekly_rank'] = 0;
-                    }else {
-                        $model['weekly_rank'] = $week[1];
-                    }
-                }
-                if(preg_match('~Monthly rank~si', $rank)) {
-                    preg_match('~<span class="big">\s{1,}+(.*?)\s{1,}</span>~si', $rank, $month);
-                    if ($month[1] == 'N/A') {
-                        $model['monthly_rank'] = 0;
-                    } else {
-                        $model['monthly_rank'] = $month[1];
-                    }
-                }
-                if(preg_match('~Last month~si', $rank)){
-                    preg_match('~<span class="big">\s{1,}+(.*?)\s{1,}</span>~si', $rank, $last_month);
-                    if($last_month[1] == 'N/A'){
-                        $model['last_month_rank'] = 0;
-                    }else {
-                        $model['last_month_rank'] = $last_month[1];
-                    }
-                }
-                if(preg_match('~Yearly rank~si', $rank)){
-                    preg_match('~<span class="big">\s{1,}+(.*?)\s{1,}</span>~si', $rank, $year);
-                    if($year[1] == 'N/A'){
-                        $model['yearly_rank'] = 0;
-                    }else {
-                        $model['yearly_rank'] = $year[1];
-                    }
-                }
+
+              foreach ($current_rank[1] as $rank) {
+
+                  if (preg_match('~Weekly rank~si', $rank)) {
+                      preg_match('~<span class="big">\s{1,}+(.*?)\s{1,}</span>~si', $rank, $week);
+                      if ($week[1] == 'N/A') {
+                          $model['weekly_rank'] = 0;
+                      } else {
+                          $model['weekly_rank'] = $week[1];
+                      }
+                  }
+                  if (preg_match('~Monthly rank~si', $rank)) {
+                      preg_match('~<span class="big">\s{1,}+(.*?)\s{1,}</span>~si', $rank, $month);
+                      if ($month[1] == 'N/A') {
+                          $model['monthly_rank'] = 0;
+                      } else {
+                          $model['monthly_rank'] = $month[1];
+                      }
+                  }
+                  if (preg_match('~Last month~si', $rank)) {
+                      preg_match('~<span class="big">\s{1,}+(.*?)\s{1,}</span>~si', $rank, $last_month);
+                      if ($last_month[1] == 'N/A') {
+                          $model['last_month_rank'] = 0;
+                      } else {
+                          $model['last_month_rank'] = $last_month[1];
+                      }
+                  }
+                  if (preg_match('~Yearly rank~si', $rank)) {
+                      preg_match('~<span class="big">\s{1,}+(.*?)\s{1,}</span>~si', $rank, $year);
+                      if ($year[1] == 'N/A') {
+                          $model['yearly_rank'] = 0;
+                      } else {
+                          $model['yearly_rank'] = $year[1];
+                      }
+                  }
+              }
+          }else{
+              $model['weekly_rank'] = 0;
+              $model['monthly_rank'] = 0;
+              $model['last_month_rank'] = 0;
+              $model['yearly_rank'] = 0;
           }
 
+          //How many videos
+          if(preg_match('~<div class="showingCounter pornstarVideosCounter">(.*?)</div~si', $content, $n_videos)) {
 
-          preg_match('~<div class="showingCounter pornstarVideosCounter">(.*?)</div~si', $content, $n_videos);
-          $n_videos_to_convert = trim($n_videos[1]);
-          $videos = substr($n_videos_to_convert, strpos($n_videos_to_convert, 'of') + 3);
-          $model['videos'] = intval($videos);
+              $n_videos_to_convert = trim($n_videos[1]);
+              $videos = substr($n_videos_to_convert, strpos($n_videos_to_convert, 'of') + 3);
+              $model['videos'] = intval($videos);
+          }else{
+              $model['videos'] = NULL;
+          }
 
           //video views
-          preg_match('~<div class="tooltipTrig infoBox videoViews" data-title="Video views:\s+(.*?)">~', $content, $video_views);
-          $model['visuals'] = str_replace(',', '', trim($video_views[1]));
-
-          //subscribers
-          preg_match('~<div class="infoBox">(.*?)[\W\w]Subscribers\s{1,}</div>~si', $content, $for_subs);
-          preg_match_all('~<div class="infoBox">(.*?)</div>~si', $for_subs[0], $infoBox_for_subs);
-          foreach ($infoBox_for_subs[0] as $infoBox){
-              if(preg_match('~Subscribers~si', $infoBox)){
-                  preg_match('~<span class="big">\s{1,}+(.*?)\s{1,}</span>~si', $infoBox, $subs);
-                  $model['subscribers'] = intval(format_num_to_thousands($subs[1]));
-              }
+          if(preg_match('~<div class="tooltipTrig infoBox videoViews" data-title="Video views:\s+(.*?)">~', $content, $video_views)){
+              $model['visuals'] = str_replace(',', '', trim($video_views[1]));
+          }else{
+              $model['visuals'] = NULL;
           }
 
+          //subscribers
+          if(preg_match('~<div class="infoBox">(.*?)[\W\w]Subscribers\s{1,}</div>~si', $content, $for_subs)){
+              preg_match_all('~<div class="infoBox">(.*?)</div>~si', $for_subs[0], $infoBox_for_subs);
+              foreach ($infoBox_for_subs[0] as $infoBox){
+                  if(preg_match('~Subscribers~si', $infoBox)){
+                      preg_match('~<span class="big">\s{1,}+(.*?)\s{1,}</span>~si', $infoBox, $subs);
+                      $model['subscribers'] = intval(format_num_to_thousands($subs[1]));
+                  }
+              }
+          }else{
+              $model['subscribers'] = NULL;
+          }
+
+
           //Joined
-          preg_match('~<span>\s+Joined:+(.*?)\s+ago~si', $content, $joined);
-          $joined_date = trim(substr($joined[1], strpos($joined[1], 'Info">') + 6));
-          $model['joined'] = date('Y/m/d', strtotime("-" . $joined_date));
+          if(preg_match('~<span>\s+Joined:+(.*?)\s+ago~si', $content, $joined)){
+              $joined_date = trim(substr($joined[1], strpos($joined[1], 'Info">') + 6));
+              $model['joined'] = date('Y/m/d', strtotime("-" . $joined_date));
+          }else{
+              $model['joined'] = NULL;
+          }
 
 
           //All socials
-          preg_match('~<ul class="clearfix socialList">(.*?)</ul>~si', $content, $social_list);
-          preg_match_all('~<li>(.*?)</li>~si', $social_list[1], $all_social);
-          foreach ($all_social[1] as $social) {
+          if(preg_match('~<ul class="clearfix socialList">(.*?)</ul>~si', $content, $social_list)) {
 
-              //ModelHUb
-              if (preg_match('/target=\"_blank\">\s+ ' . $model['model_name'] . ' Modelhub/i', $social)) {
-                  preg_match('/<a href=\"(.*?)\"/', $social, $model_hub);
-                  $model['modelhub'] = $model_hub[1];
 
-              }
-              if(empty($model['modelhub'])){
-                  $model['modelhub'] = NULL;
-              }
+              preg_match_all('~<li>(.*?)</li>~si', $social_list[1], $all_social);
+              foreach ($all_social[1] as $social) {
 
-              //Official Site
-              if (preg_match('/Official Site/', $social)) {
-                  preg_match('/<a href=\"(.*?)\"/', $social, $official_site_link);
-                  if(strlen($official_site_link[1])> 8) {
-                      $model['website'] = $official_site_link[1];
+                  //ModelHUb
+                  if (preg_match('/target=\"_blank\">\s+ ' . $model['model_name'] . ' Modelhub/i', $social)) {
+                      preg_match('/<a href=\"(.*?)\"/', $social, $model_hub);
+                      $model['modelhub'] = $model_hub[1];
 
                   }
-              }
-              if (empty($model['website'])) {
-                  $model['website'] = NULL;
-              }
+                  if (empty($model['modelhub'])) {
+                      $model['modelhub'] = NULL;
+                  }
 
-              //Twitter
-              if (preg_match('/Twitter/', $social)) {
-                  preg_match('/<a href=\"(.*?)\"/', $social, $twitter_link);
-                  $model['twitter'] = $twitter_link[1];
+                  //Official Site
+                  if (preg_match('/Official Site/', $social)) {
+                      preg_match('/<a href=\"(.*?)\"/', $social, $official_site_link);
+                      if (strlen($official_site_link[1]) > 8) {
+                          $model['website'] = $official_site_link[1];
 
-              }
-              if (empty($model['twitter'])) {
-                  $model['twitter'] = NULL;
-              }
+                      }
+                  }
+                  if (empty($model['website'])) {
+                      $model['website'] = NULL;
+                  }
 
-              //Instagram
-              if (preg_match('/Instagram/', $social)) {
-                  preg_match('/<a href=\"(.*?)\"/', $social, $instagram_link);
-                  $model['instagram'] = $instagram_link[1];
+                  //Twitter
+                  if (preg_match('/Twitter/', $social)) {
+                      preg_match('/<a href=\"(.*?)\"/', $social, $twitter_link);
+                      $model['twitter'] = $twitter_link[1];
 
-              }
-              if (empty($model['instagram'])) {
-                  $model['instagram'] = NULL;
-              }
+                  }
+                  if (empty($model['twitter'])) {
+                      $model['twitter'] = NULL;
+                  }
 
-              //Fan Centro
-              if (preg_match('/FanCentro/', $social)) {
-                  preg_match('/<a href=\"(.*?)\"/', $social, $fanCentro);
-                  $model['fan_centro'] = $fanCentro[1];
+                  //Instagram
+                  if (preg_match('/Instagram/', $social)) {
+                      preg_match('/<a href=\"(.*?)\"/', $social, $instagram_link);
+                      $model['instagram'] = $instagram_link[1];
 
+                  }
+                  if (empty($model['instagram'])) {
+                      $model['instagram'] = NULL;
+                  }
+
+                  //Fan Centro
+                  if (preg_match('/FanCentro/', $social)) {
+                      preg_match('/<a href=\"(.*?)\"/', $social, $fanCentro);
+                      $model['fan_centro'] = $fanCentro[1];
+
+                  }
+                  if (empty($model['fan_centro'])) {
+                      $model['fan_centro'] = NULL;
+                  }
               }
-              if (empty($model['fan_centro'])) {
-                  $model['fan_centro'] = NULL;
-              }
+          }else{
+              $model['modelhub'] = NULL;
+              $model['website'] = NULL;
+              $model['twitter'] = NULL;
+              $model['instagram'] = NULL;
+              $model['fan_centro'] = NULL;
           }
       }
       return $model;
@@ -503,36 +538,35 @@ class Pornhub
 
       $all_pornstars = [];
 
-      for ($counter = 1; $counter <= $page; $counter++) {
-          $url = 'https://www.pornhub.com/pornstars?o=t&performerType=pornstar&page=' . $counter . '';
-          $ch = curl_init();
-          curl_setopt($ch, CURLOPT_URL, $url);
-          curl_setopt($ch, CURLOPT_HTTPHEADER, array("User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.15) Gecko/20080623 Firefox/2.0.0.15"));
-          curl_setopt($ch, CURLOPT_NOBODY, false);
-          curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-          curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-          $content = curl_exec($ch);
-          curl_close($ch);
+      $url = 'https://www.pornhub.com/pornstars?o=t&performerType=pornstar&page=' . $page . '';
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL, $url);
+      curl_setopt($ch, CURLOPT_HTTPHEADER, array("User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.15) Gecko/20080623 Firefox/2.0.0.15"));
+      curl_setopt($ch, CURLOPT_NOBODY, false);
+      curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+      $content = curl_exec($ch);
+      curl_close($ch);
 
 
 
-          preg_match_all('~<li class="pornstarLi">(.*?)</li>~si', $content, $pornstarLi);
-          foreach ($pornstarLi[0] as $pornstar_info){
-              $pornstar = [];
-              preg_match('~<a class="js-mxp"(.*?)<span~si', $pornstar_info, $link);
-              preg_match('~href="/pornstar/(.*?)"~si', $link[1], $username);
-              $pornstar['username'] = $username[1];
+      preg_match_all('~<li class="pornstarLi">(.*?)</li>~si', $content, $pornstarLi);
+      foreach ($pornstarLi[0] as $pornstar_info){
+          $pornstar = [];
+          preg_match('~<a class="js-mxp"(.*?)<span~si', $pornstar_info, $link);
+          preg_match('~href="/pornstar/(.*?)"~si', $link[1], $username);
+          $pornstar['username'] = $username[1];
 
-              if(preg_match('~<i class="verifiedIcon"></i>~', $pornstar_info)){
-                  $pornstar['verified'] = 1;
-              }else{
-                  $pornstar['verified'] = 0;
-              }
-
-              $all_pornstars[] = $pornstar;
+          if(preg_match('~<i class="verifiedIcon"></i>~', $pornstar_info)){
+              $pornstar['verified'] = 1;
+          }else{
+              $pornstar['verified'] = 0;
           }
 
+          $all_pornstars[] = $pornstar;
       }
+
+
       return $all_pornstars;
   }
 
@@ -550,6 +584,7 @@ class Pornhub
       $pornstar = [];
 
       $pornstar['type'] = 'pornstar';
+      $pornstar['username'] = $username;
 
 
       if(preg_match('/<div class=\"geoBlocked\">/', $content)){
@@ -560,9 +595,12 @@ class Pornhub
           $pornstar['available'] = 1;
           if(preg_match('/<h1 itemprop=\"name\">\s+(.*?)\s{2,}<\/h1>/', $content, $pornstar_name)){
               $pornstar['pornstar_name'] = trim($pornstar_name[1]);
-          }else{
-              preg_match('~div class="name">[\W\w]+<h1>(.*?)</h1>~si', $content, $pornstar_name);
+          }elseif(preg_match('~div class="name">[\W\w]+<h1>(.*?)</h1>~si', $content, $pornstar_name)){
               $pornstar['pornstar_name'] = trim($pornstar_name[1]);
+          }elseif(preg_match('~<div class="name">[\w\W]+<h1>\s{2,}(.*?)\s{2,}</h1>~si', $content, $pornstar_name)){
+              $pornstar['pornstar_name'] = $pornstar_name[1];
+          }else{
+              $pornstar['pornstar_name'] = $username;
           }
 
 
@@ -575,25 +613,26 @@ class Pornhub
           }
 
           //Age
-          preg_match_all('~<div class="infoPiece">(.*?)</div>~si', $content, $info_piece);
+          if(preg_match_all('~<div class="infoPiece">(.*?)</div>~si', $content, $info_piece)){
+              foreach ($info_piece[1] as $item) {
 
 
-          foreach ($info_piece[1] as $item) {
+                  if (preg_match('~Age~', $item)) {
+                      preg_match('~class="smallInfo">\s?+(.*?)</span~si', $item, $age);
 
+                      $pornstar['age'] = trim($age[1]);
+                  }
+                  if (empty($pornstar['age'])) {
+                      $pornstar['age'] = NULL;
+                  }
+                  if (preg_match('~Birth date~', $item)) {
+                      preg_match('~class="smallInfo">\s+(.*?)</span~', $item, $age);
 
-              if (preg_match('~Age~', $item)) {
-                  preg_match('~class="smallInfo">\s?+(.*?)</span~si', $item, $age);
+                  }
 
-                  $pornstar['age'] = trim($age[1]);
               }
-              if (empty($pornstar['age'])) {
-                  $pornstar['age'] = NULL;
-              }
-              if (preg_match('~Birth date~', $item)) {
-                  preg_match('~class="smallInfo">\s+(.*?)</span~', $item, $age);
-
-              }
-
+          }else{
+              $pornstar['age'] = NULL;
           }
 
           //birth date
@@ -605,54 +644,66 @@ class Pornhub
 
 
           //Ranks
-          preg_match_all('~class="infoBox rankDetails">(.*?)</span></div>~si', $content, $current_rank);
+          if(preg_match_all('~class="infoBox rankDetails">(.*?)</span></div>~si', $content, $current_rank)){
+              foreach ($current_rank[0] as $rank){
 
-          foreach ($current_rank[0] as $rank){
-
-              if(preg_match('~Weekly rank~si', $rank)){
-                  preg_match('~<span class="big">(.*?)</span>~si', $rank, $week);
-                  //<div class="infoBox rankDetails"><span class="big">10</span><div class="title">Weekly Rank</div></div>
-                  if($week[1] == 'N/A'){
-                      $pornstar['weekly_rank'] = 0;
-                  }else {
-                      $pornstar['weekly_rank'] = $week[1];
+                  if(preg_match('~Weekly rank~si', $rank)){
+                      preg_match('~<span class="big">(.*?)</span>~si', $rank, $week);
+                      //<div class="infoBox rankDetails"><span class="big">10</span><div class="title">Weekly Rank</div></div>
+                      if($week[1] == 'N/A'){
+                          $pornstar['weekly_rank'] = 0;
+                      }else {
+                          $pornstar['weekly_rank'] = $week[1];
+                      }
+                  }
+                  if(preg_match('~Monthly rank~si', $rank)) {
+                      preg_match('~<span class="big">(.*?)</span>~si', $rank, $month);
+                      if ($month[1] == 'N/A') {
+                          $pornstar['monthly_rank'] = 0;
+                      } else {
+                          $pornstar['monthly_rank'] = $month[1];
+                      }
+                  }
+                  if(preg_match('~Last month~si', $rank)){
+                      preg_match('~<span class="big">(.*?)</span>~si', $rank, $last_month);
+                      if($last_month[1] == 'N/A'){
+                          $pornstar['last_month_rank'] = 0;
+                      }else {
+                          $pornstar['last_month_rank'] = $last_month[1];
+                      }
+                  }
+                  if(preg_match('~Yearly rank~si', $rank)){
+                      preg_match('~<span class="big">(.*?)</span>~si', $rank, $year);
+                      if($year[1] == 'N/A'){
+                          $pornstar['yearly_rank'] = 0;
+                      }else {
+                          $pornstar['yearly_rank'] = $year[1];
+                      }
                   }
               }
-              if(preg_match('~Monthly rank~si', $rank)) {
-                  preg_match('~<span class="big">(.*?)</span>~si', $rank, $month);
-                  if ($month[1] == 'N/A') {
-                      $pornstar['monthly_rank'] = 0;
-                  } else {
-                      $pornstar['monthly_rank'] = $month[1];
-                  }
-              }
-              if(preg_match('~Last month~si', $rank)){
-                  preg_match('~<span class="big">(.*?)</span>~si', $rank, $last_month);
-                  if($last_month[1] == 'N/A'){
-                      $pornstar['last_month_rank'] = 0;
-                  }else {
-                      $pornstar['last_month_rank'] = $last_month[1];
-                  }
-              }
-              if(preg_match('~Yearly rank~si', $rank)){
-                  preg_match('~<span class="big">(.*?)</span>~si', $rank, $year);
-                  if($year[1] == 'N/A'){
-                      $pornstar['yearly_rank'] = 0;
-                  }else {
-                      $pornstar['yearly_rank'] = $year[1];
-                  }
-              }
+          }else{
+              $pornstar['weekly_rank'] = 0;
+              $pornstar['monthly_rank'] = 0;
+              $pornstar['last_month_rank'] = 0;
+              $pornstar['yearly_rank'] = 0;
           }
 
 
-          preg_match('~<div class="showingCounter pornstarVideosCounter">(.*?)</div~si', $content, $n_videos);
-          $n_videos_to_convert = trim($n_videos[1]);
-          $videos = substr($n_videos_to_convert, strpos($n_videos_to_convert, 'of') + 3);
-          $pornstar['videos'] = intval($videos);
+          //How Many Videos
+          if(preg_match('~<div class="showingCounter pornstarVideosCounter">(.*?)</div~si', $content, $n_videos)){
+              $n_videos_to_convert = trim($n_videos[1]);
+              $videos = substr($n_videos_to_convert, strpos($n_videos_to_convert, 'of') + 3);
+              $pornstar['videos'] = intval($videos);
+          }else{
+              $pornstar['videos'] = NULL;
+          }
 
           //video views
-          preg_match('~data-title="Video views:\s+(.*?)">~', $content, $video_views);
-          $pornstar['visuals'] = str_replace(',', '', trim($video_views[1]));
+          if(preg_match('~data-title="Video views:\s+(.*?)">~', $content, $video_views)){
+              $pornstar['visuals'] = str_replace(',', '', trim($video_views[1]));
+          }else{
+              $pornstar['visuals'] = NULL;
+          }
 
           //subscribers
 //          preg_match('~<div class="infoBox">(.*?)[\W\w]Subscribers\s{1,}</div>~si', $content, $for_subs);
@@ -668,23 +719,11 @@ class Pornhub
           if(preg_match('~class="title">Subscribers</div><span>(.*?)</span>~si', $content, $subs)){
               $pornstar['subscribers'] = intval(str_replace(',', '', $subs[1]));
 
-
-
           }elseif(preg_match('~<div class="infoBox">(.*?)[\W\w]Subscribers\s{1,}</div>~si', $content, $for_subs)){
               preg_match('~div class="infoBox subscribers">[\W\w]+<span class="big">(.*?)</span~si', $for_subs[0], $subs);
               $pornstar['subscribers'] = intval(format_num_to_thousands($subs[1]));
-
-
-//              foreach ($infoBox_for_subs[0] as $infoBox){
-//                  var_dump($infoBox);
-//                  echo '<hr>';
-//                  if(preg_match('~Subscribers~si', $infoBox)){
-//                      preg_match('~<span class="big">\s{1,}+(.*?)\s{1,}</span>~si', $infoBox, $subs);
-//                      $model['subscribers'] = intval(format_num_to_thousands($subs[1]));
-//                  }
-//              }
-//              var_dump($model['subscribers']);
-
+          }else{
+              $pornstar['subscribers'] = NULL;
           }
 
           //Joined
@@ -769,7 +808,7 @@ class Pornhub
   }
 
   public function testScrape(){
-      $url= 'https://www.pornhub.com/pornstar/leolulu';
+      $url= 'https://www.pornhub.com/pornstar/scarlit-scandal';
       $ch = curl_init();
       curl_setopt($ch, CURLOPT_URL,$url);
       curl_setopt($ch, CURLOPT_HTTPHEADER, Array("User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.15) Gecko/20080623 Firefox/2.0.0.15") );
@@ -779,14 +818,8 @@ class Pornhub
       $content= curl_exec ($ch);
       curl_close ($ch);
 
-      if(preg_match('/<h1 itemprop=\"name\">\s+(.*?)\s{2,}<\/h1>/', $content, $pornstar_name)){
-          $pornstar['pornstar_name'] = trim($pornstar_name[1]);
-      }else{
-          preg_match('~div class="name">[\W\w]+<h1>(.*?)</h1>~si', $content, $pornstar_name);
-          $pornstar['pornstar_name'] = trim($pornstar_name[1]);
-          var_dump($pornstar[]);
-      }
-
+      preg_match('~<div class="name">[\w\W]+<h1>\s{2,}(.*?)\s{2,}</h1>~si', $content, $name);
+      var_dump($name);
       return ;
 
   }

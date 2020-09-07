@@ -15,6 +15,8 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         //
         Commands\ParsingModelCommand::class,
+        Commands\ParsingPornstarsCommand::class,
+        Commands\ParsingAmateurModelsCommand::class,
     ];
 
     /**

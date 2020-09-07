@@ -1,37 +1,71 @@
 @extends('layouts.simple')
 
-@section('content')
+@section('css_before')
+    <link rel="stylesheet" href="{{asset('js/plugins/ion-rangeslider/css/ion.rangeSlider.css')}}">
+@endsection
 
+@section('content')
     <div class="container">
-        <div class="block block-rounded">
-            <div class="block-content block-content-full bg-pattern">
-                <div class="py-20 text-center">
-                    <h2 class="font-w700 text-black mb-10">
-                        All Models
-                    </h2>
+        <div class="block">
+            <div class="block-title">
+                <div class="block-content text-center">
+                    <h1>Pornstars</h1>
                 </div>
             </div>
         </div>
-        <form action="" method="GET">
-            <div class="row">
-                <div class="col-4 ml-auto">
-                    <div class="form-material floating open" style="margin-bottom: 10px">
-                        <select class="form-control" id="rows_for_page" name="rows_for_page" onchange="getPages()">
-                            <option selected value="10">10</option>
-                            <option value="20">20</option>
-                            <option value="30">30</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                        </select>
-                        <label for="rows_for_page">Model for page</label>
+
+        <div class="box">
+            <input type="text" class="js-range-slider" name="my_range" value="" />
+
+
+        </div>
+
+        <div class="block">
+            <div class="block-content block-content-full">
+                <button type="button" class="btn btn-alt-info" data-toggle="modal" data-target="#age">Age</button>
+            </div>
+        </div>
+
+        <div class="modal fade" id="age" tabindex="-1" role="dialog" aria-labelledby="modal-fadein" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="block block-themed block-transparent mb-0">
+                        <div class="block-header bg-primary-dark">
+                            <h3 class="block-title">Range Age</h3>
+                            <div class="block-options">
+                                <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                                    <i class="si si-close"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="block-content">
+                            <input type="text" class="js-rangeslider" id="example-rangeslider4" name="example-rangeslider4" data-type="double" data-grid="true" data-min="18" data-max="90" data-from="18" data-to="90" onchange="myfunc()">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-alt-secondary" data-dismiss="modal" onclick="closeAgeFunction()">Close</button>
+                        <button type="button" class="btn btn-alt-success" data-dismiss="modal">
+                            <i class="fa fa-check"></i> Perfect
+                        </button>
                     </div>
                 </div>
             </div>
-        </form>
+        </div>
 
 
+        <div class="block">
+            <div class="block-content">
+                <div class="form-group row">
+                    <label class="col-lg-2 col-form-label mt-10">Double</label>
+                    <div class="col-lg-10">
+                        <input type="text" class="js-rangeslider" id="x-rangeslider4" name="example-rangeslider4" data-type="double" data-grid="true" data-min="18" data-max="90" data-from="18" data-to="90" onchange="myfunc()">
+                    </div>
+                </div>
+            </div>
+        </div>
         @foreach($all_pornstars as $pornstar)
             <div class="block">
+                <hr>
                 <div class="block-content block-content-full">
                     <div class="row align-items-center">
                         <div class="col-sm-6 py-10">
@@ -49,24 +83,24 @@
                                 </p>
                                 <p class="font-size-sm mb-10">
 
-                                    @if($model->modelHub != NULL)
-                                        <a class="mr-5 mb-5" href="{{$model->modelHub}}">ModelHub</a>
+                                    @if($pornstar->modelHub != NULL)
+                                        <a class="mr-5 mb-5" href="{{$pornstar->modelHub}}">ModelHub</a>
                                     @endif
 
-                                    @if($model->official_site != NULL)
-                                        <a class="mr-5 mb-5" href="{{$model->official_site}}">Official site</a>
+                                    @if($pornstar->official_site != NULL)
+                                        <a class="mr-5 mb-5" href="{{$pornstar->official_site}}">Official site</a>
                                     @endif
 
-                                    @if($model->instagram != NULL)
-                                        <a class="mr-5 mb-5" href="{{$model->instagram}}">Instagram</a>
+                                    @if($pornstar->instagram != NULL)
+                                        <a class="mr-5 mb-5" href="{{$pornstar->instagram}}">Instagram</a>
                                     @endif
 
-                                    @if($model->twitter != NULL)
-                                        <a class="mr-5 mb-5" href="{{$model->twitter}}">Twitter</a>
+                                    @if($pornstar->twitter != NULL)
+                                        <a class="mr-5 mb-5" href="{{$pornstar->twitter}}">Twitter</a>
                                     @endif
 
-                                    @if($model->fan_centro != NULL)
-                                        <a class="mr-5 mb-5" href="{{$model->fan_centro}}">Fan Centro</a>
+                                    @if($pornstar->fan_centro != NULL)
+                                        <a class="mr-5 mb-5" href="{{$pornstar->fan_centro}}">Fan Centro</a>
                                     @endif
 
 
@@ -81,5 +115,46 @@
                     </div>
                 </div>
             </div>
+        @endforeach
+    </div>
 
+@endsection
+@section('js_after')
+    <script src="{{asset('js/plugins/ion-rangeslider/js/ion.rangeSlider.min.js')}}"></script>
+    <script>jQuery(function(){ Codebase.helpers(['rangeslider']); });</script>
+
+    <script>
+        function myfunc(){
+            // console.log(document.getElementById('example-rangeslider4').value);
+        }
+
+        function closeAgeFunction(){
+
+            $("#example-rangeslider4").ionRangeSlider({
+                from: 18,
+                to: 80,
+            });
+            // console.log('prov');
+
+        }
+
+
+        var $d3 = $("#demo_3");
+
+        $d3.ionRangeSlider({
+            skin: "big",
+            min: 0,
+            max: 10000,
+            from: 5000
+        });
+
+        $d3.on("change", function () {
+            var $inp = $(this);
+            var from = $inp.prop("value"); // reading input value
+            var from2 = $inp.data("from"); // reading input data-from attribute
+
+            console.log(from, from2); // FROM value
+        });
+
+    </script>
 @endsection

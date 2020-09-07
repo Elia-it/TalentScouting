@@ -74,9 +74,7 @@ class ParsingModelCommand extends Command
                         if ($pornstar_data['available'] == 0) {
                             if ($pornstar = Pornstars::where('full_name', $pornstar_data['pornstar_name'])->first()) {
                                 $rank_date = date(PornstarRank::where('pornstar_id', $pornstar->id)->latest('rank_by_date')->first());
-                                if ($rank_date == date('Y-m-d')) {
-
-                                } else {
+                                if ($rank_date != date('Y-m-d')) {
                                     PornstarRank::create([
                                         'pornstar_id' => $pornstar->id,
                                         'rank_by_date' => date('Y-m-d H:i:s')
@@ -113,9 +111,7 @@ class ParsingModelCommand extends Command
 
                                 $rank_date = date(PornstarRank::where('pornstar_id', $pornstar->id)->latest('rank_by_date')->first());
 
-                                if ($rank_date == date('Y-m-d')) {
-
-                                } else {
+                                if ($rank_date != date('Y-m-d')) {
                                     PornstarRank::create([
                                         'pornstar_id' => $pornstar->id,
                                         'weekly' => $pornstar_data['weekly_rank'],
@@ -128,7 +124,6 @@ class ParsingModelCommand extends Command
                                         'rank_by_date' => date('Y-m-d H:i:s'),
                                     ]);
                                 }
-
 
                             } else {
                                 $info_pornstar = Pornstars::create([
@@ -188,9 +183,7 @@ class ParsingModelCommand extends Command
                         if ($model_data['available'] == 0) {
                             if ($model = Pornstars::where('full_name', $model_data['model_name'])->first()) {
                                 $rank_date = date(PornstarRank::where('pornstar_id', $model->id)->latest('rank_by_date')->first());
-                                if ($rank_date == date('Y-m-d')) {
-
-                                } else {
+                                if ($rank_date != date('Y-m-d')) {
                                     PornstarRank::create([
                                         'pornstar_id' => $pornstar->id,
                                         'rank_by_date' => date('Y-m-d H:i:s')
@@ -204,7 +197,7 @@ class ParsingModelCommand extends Command
                                     'verified' => $username_verified_model['verified']
                                 ]);
                                 PornstarRank::create([
-                                    'model_id' => $info_model->id,
+                                    'pornstar_id' => $info_model->id,
                                     'rank_by_date' => date('Y-m-d H:i:s')
                                 ]);
                             }
@@ -227,9 +220,7 @@ class ParsingModelCommand extends Command
 
                                 $rank_date = date(PornstarRank::where('pornstar_id', $model->id)->latest('rank_by_date')->first());
 
-                                if ($rank_date == date('Y-m-d')) {
-
-                                } else {
+                                if ($rank_date != date('Y-m-d')) {
                                     PornstarRank::create([
                                         'pornstar_id' => $model->id,
                                         'weekly' => $model_data['weekly_rank'],
@@ -242,7 +233,6 @@ class ParsingModelCommand extends Command
                                         'rank_by_date' => date('Y-m-d H:i:s'),
                                     ]);
                                 }
-
 
                             } else {
                                 $info_model = Pornstars::create([
@@ -263,7 +253,7 @@ class ParsingModelCommand extends Command
                                 ]);
 
                                 PornstarRank::create([
-                                    'model_id' => $info_model->id,
+                                    'pornstar_id' => $info_model->id,
                                     'weekly' => $model_data['weekly_rank'],
                                     'monthly' => $model_data['monthly_rank'],
                                     'last_month' => $model_data['last_month_rank'],

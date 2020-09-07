@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\PornhubActor;
+use App\Pornstars;
 use Illuminate\Http\Request;
-use App\AmateurModel;
+use App\PornstarRank;
 
 class ModelController extends Controller
 {
@@ -17,7 +17,7 @@ class ModelController extends Controller
     {
 
         //
-        $all_models = PornhubActor::where('type', 'model')->get();
+        $all_pornstars = Pornstars::all();
 
         return view('models', compact('all_models'));
 

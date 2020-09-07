@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Pornstars;
 use Illuminate\Http\Request;
 use App\simple_html_dom;
 use Sunra\PhpSimple\HtmlDomParser;
@@ -302,26 +303,30 @@ class Test extends Controller
 
     public function test_mo(){
 
+        $all_pornstars = [];
+        $all_amateurs = [];
         $pornhub = new Pornhub();
-        echo '<hr>';
-        echo '<h1>Pornstars</h1>';
-        echo '<hr>';
-//        $pornstars = $pornhub->getPornstarByPage(1);
-//        foreach ($pornstars as $pornostar){
-//            $models = $pornhub->getPornstar($pornostar);
-//            var_dump($models);
-//            echo '<hr>';
-//        }
-//        var_dump($pornstars);
-//        echo '<hr>';
-//        echo '<h1>Models</h1>';
-//        echo '<hr>';
-//        $models = $pornhub->getModelsByPage(1);
-        $pornhub->testScrape();
+        $page = 1;
+        for ($counter = 1; $counter <= $page; $counter++){
+
+            $pornstars = $pornhub->getPornstarsByPage('pornstar', $counter);
+
+            foreach ($pornstars as $pornstar){
+                $pornstar_data = $pornhub->getPornstarTest('pornstar', $pornstar['username']);
+                var_dump($pornstar_data);
+            }
+
+//            $amateur_models = $pornhub->getPornstarsByPage('model', $counter);
+//
+//            foreach ($amateur_models as $model){
+//                $model_data = $pornhub->getPornstarTest('model', $model['username']);
+//
+//                $all_amateurs[] = $model_data;
+//            }
+
+        }
 
 
-
-
-        return view('test');
+        return view('test', compact('all_pornstars'));
     }
 }

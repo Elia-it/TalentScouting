@@ -2,6 +2,7 @@
 
 @section('css_before')
     <link rel="stylesheet" href="{{asset('js/plugins/ion-rangeslider/css/ion.rangeSlider.css')}}">
+    <link rel="stylesheet" href="{{asset('js/plugins/flatpickr/flatpickr.min.css')}}">
 @endsection
 
 @section('content')
@@ -13,148 +14,644 @@
                 </div>
             </div>
         </div>
-
-        <div class="box">
-            <input type="text" class="js-range-slider" name="my_range" value="" />
-
-
-        </div>
-
-        <div class="block">
-            <div class="block-content block-content-full">
-                <button type="button" class="btn btn-alt-info" data-toggle="modal" data-target="#age">Age</button>
-            </div>
-        </div>
-
-        <div class="modal fade" id="age" tabindex="-1" role="dialog" aria-labelledby="modal-fadein" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="block block-themed block-transparent mb-0">
-                        <div class="block-header bg-primary-dark">
-                            <h3 class="block-title">Range Age</h3>
-                            <div class="block-options">
-                                <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
-                                    <i class="si si-close"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="block-content">
-                            <input type="text" class="js-rangeslider" id="example-rangeslider4" name="example-rangeslider4" data-type="double" data-grid="true" data-min="18" data-max="90" data-from="18" data-to="90" onchange="myfunc()">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-alt-secondary" data-dismiss="modal" onclick="closeAgeFunction()">Close</button>
-                        <button type="button" class="btn btn-alt-success" data-dismiss="modal">
-                            <i class="fa fa-check"></i> Perfect
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
         <div class="block">
             <div class="block-content">
-                <div class="form-group row">
-                    <label class="col-lg-2 col-form-label mt-10">Double</label>
-                    <div class="col-lg-10">
-                        <input type="text" class="js-rangeslider" id="x-rangeslider4" name="example-rangeslider4" data-type="double" data-grid="true" data-min="18" data-max="90" data-from="18" data-to="90" onchange="myfunc()">
-                    </div>
-                </div>
+                    <form method="POST" action="{{route('pornstar_get')}}" id="search_form" onsubmit="false">
+                        @csrf
+                        <div class="row">
+                           Filters:
+                        </div>
+                        <div class="row">
+                            <div class="push">
+                                <div class="btn-group" role="group" aria-label="btnGroup2">
+                                    <div class="btn-group" role="group" id="type_dropdown">
+                                        <button type="button" class="btn btn-info dropdown-toggle" id="type_dropdown_menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Type</button>
+                                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
+                                            <div class="dropdown-item">
+                                                <label class="css-control css-control-primary css-checkbox">
+                                                    <input type="checkbox" class="css-control-input" @if(request()->input('pornstar') == 'on') checked @endif name="pornstar">
+                                                    <span class="css-control-indicator"></span> Pornstar
+                                                </label>
+                                            </div>
+                                            <div class="dropdown-item">
+                                                <label class="css-control css-control-primary css-checkbox">
+                                                    <input type="checkbox" class="css-control-input" @if(request()->input('amateur_model') == 'on') checked @endif name="amateur_model">
+                                                    <span class="css-control-indicator"></span> Amateur model
+                                                </label>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <button type="button" data-toggle="modal" data-target="#age" class="btn btn-info">Range Age: <i id="more"> @if(request()->input('more_than_age') != NULL) {{request()->input('more_than_age')}} @else 18 @endif </i> - <i id="less"> @if(request()->input('less_than_age') != NULL) {{request()->input('less_than_age')}} @else 90 @endif</i></button>
+                                    <div class="modal fade" id="age" tabindex="-1" role="dialog" aria-labelledby="modal-fadein" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="block block-themed block-transparent mb-0">
+                                                    <div class="block-header bg-primary-dark text-center">
+                                                        <h3 class="block-title">Range Age</h3>
+                                                        <div class="block-options">
+                                                            <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                                                                <i class="si si-close"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="block-content text-center">
+                                                        <div class="row">
+                                                            <div class="col-6 text-center">
+                                                                <div class="col-8 mx-auto">
+                                                                    <div class="form-material">
+
+                                                                        <input type="number" min="18" max="90" @if(request()->input('more_than_age') != NULL) value="{{request()->input('more_than_age')}}" @else value="18" @endif class="form-control" id="more_than_age" name="more_than_age" placeholder="..." onchange="moreThanAge()">
+                                                                        <label for="more_than_age">Maggiore di</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-6 text-center">
+
+                                                                <div class="col-8 mx-auto">
+                                                                    <div class="form-material">
+                                                                        <input type="number" min="18" max="90" @if(request()->input('less_than_age') != NULL) value="{{request()->input('less_than_age')}}" @else value="90" @endif class="form-control" id="less_than_age" name="less_than_age" placeholder="..." onchange="lessThanAge()">
+                                                                        <label for="less_than_age">Minore di</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-alt-secondary" data-dismiss="modal" onclick="closeAgeFunction()">Close</button>
+                                                    <button type="button" class="btn btn-alt-success" data-dismiss="modal">
+                                                        <i class="fa fa-check"></i> Perfect
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="btn-group" role="group" id="verified_dropdown">
+                                        <button type="button" class="btn btn-info dropdown-toggle" id="verified_dropdown_menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Verified</button>
+                                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
+                                            <div class="dropdown-item">
+                                                <label class="css-control css-control-primary css-checkbox">
+                                                    <input type="checkbox" class="css-control-input" @if(request()->input('verified') == 'on') checked @endif name="verified">
+                                                    <span class="css-control-indicator"></span> Verified
+                                                </label>
+                                            </div>
+                                            <div class="dropdown-item">
+                                                <label class="css-control css-control-primary css-checkbox">
+                                                    <input type="checkbox" class="css-control-input" @if(request()->input('not_verified') == 'on') checked @endif name="not_verified">
+                                                    <span class="css-control-indicator"></span> Not Verified
+                                                </label>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+
+                                    <button type="button" data-toggle="modal" data-target="#joined_date" class="btn btn-info">Joined date</button>
+                                    <div class="modal fade" id="joined_date" tabindex="-1" role="dialog" aria-labelledby="modal-fadein" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="block block-themed block-transparent mb-0">
+                                                    <div class="block-header bg-primary-dark text-center">
+                                                        <h3 class="block-title">Joined date</h3>
+                                                        <div class="block-options">
+                                                            <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                                                                <i class="si si-close"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="block-content">
+                                                        <div class="form-group col-8 mx-auto">
+                                                            <div class="form-material">
+                                                                <input type="text" class="js-flatpickr form-control bg-white text-center" id="joined_date" name="joined_date" @if(request()->input('joined_date') != NULL) value="{{request()->input('joined_date')}}" placeholder="{{request()->input('joined_date')}}" @else  placeholder="Y-m-d" @endif>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-alt-secondary" data-dismiss="modal" onclick="closeAgeFunction()">Close</button>
+                                                    <button type="button" class="btn btn-alt-success" data-dismiss="modal">
+                                                        <i class="fa fa-check"></i> Perfect
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="btn-group" role="group" id="socials_dropdown">
+                                        <button type="button" class="btn btn-info dropdown-toggle" id="socials_dropdown_menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Socials</button>
+                                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
+                                            <div class="dropdown-item">
+                                                <label class="css-control css-control-primary css-checkbox">
+                                                    <input type="checkbox" class="css-control-input" @if(request()->input('modelhub') == 'on') checked @endif name="modelhub">
+                                                    <span class="css-control-indicator"></span> ModelHub
+                                                </label>
+                                            </div>
+                                            <div class="dropdown-item">
+                                                <label class="css-control css-control-primary css-checkbox">
+                                                    <input type="checkbox" class="css-control-input" @if(request()->input('website') == 'on' ) checked @endif name="website">
+                                                    <span class="css-control-indicator"></span> Website <i class="fa fa-desktop"></i>
+                                                </label>
+                                            </div>
+                                            <div class="dropdown-item">
+                                                <label class="css-control css-control-primary css-checkbox">
+                                                    <input type="checkbox" class="css-control-input" @if(request()->input('instagram') == 'on') checked @endif name="instagram">
+                                                    <span class="css-control-indicator"></span> Instagram <i class="fa fa-instagram"></i>
+                                                </label>
+                                            </div>
+                                            <div class="dropdown-item">
+                                                <label class="css-control css-control-primary css-checkbox">
+                                                    <input type="checkbox" class="css-control-input" @if(request()->input('twitter') == 'on') checked @endif name="twitter">
+                                                    <span class="css-control-indicator"></span> Twitter <i class="fa fa-twitter"></i>
+                                                </label>
+                                            </div>
+                                            <div class="dropdown-item">
+                                                <label class="css-control css-control-primary css-checkbox">
+                                                    <input type="checkbox" class="css-control-input" @if(request()->input('fan_centro') == 'on') checked @endif name="fan_centro">
+                                                    <span class="css-control-indicator"></span> Fan_centro
+                                                </label>
+                                            </div>
+
+
+                                        </div>
+
+                                    </div>
+                                    <div class="btn-group" role="group" id="videos_dropdown">
+                                        <button type="button" class="btn btn-info dropdown-toggle" id="videos_dropdown_menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Videos</button>
+                                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
+                                            <div class="dropdown-item">
+                                                <div class="form-material">
+                                                    <label>More than videos</label>
+                                                    <input type="number" min="0" name="more_than_video" class="form-control" @if(request()->input('more_than_video') != NULL) value="{{request()->input('more_than_video')}}" @endif>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                    <div class="btn-group" role="group" id="visuals_dropdown">
+                                        <button type="button" class="btn btn-info dropdown-toggle" id="visuals_dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Visuals</button>
+                                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
+                                            <div class="dropdown-item">
+                                                <div class="form-material">
+                                                    <label>More than visuals</label>
+                                                    <input type="number" min="0" name="more_than_visual" class="form-control" @if(request()->input('more_than_visual') != NULL) value="{{request()->input('more_than_visual')}}" @endif>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                    <div class="btn-group" role="group" id="subscriber_dropdown">
+                                        <button type="button" class="btn btn-info dropdown-toggle" id="subscriber_dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Subscribers</button>
+                                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
+                                            <div class="dropdown-item">
+                                                <div class="form-material">
+                                                    <labelMore than <br>subscribers</label><br>
+                                                    <input type="number" min="0" name="more_than_subscriber" class="form-control" @if(request()->input('more_than_subscriber') != NULL) value="{{request()->input('more_than_subscriber')}}" @endif>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            Order by:
+                        </div>
+                        <div class="row">
+                            <div class="push">
+
+                                <div class="btn-group" role="group" id="order_by_age_btn">
+                                    <button type="button" class="btn btn-info dropdown-toggle" id="order_by_age_dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Age</button>
+                                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
+                                        <div class="dropdown-item">
+
+                                            <label> Order by age</label>
+                                            <br>
+                                            <label class="css-control css-control-primary css-radio">
+                                                <input type="radio" class="css-control-input" name="order_by" value="info_age_ASC">
+                                                <span class="css-control-indicator"></span> Ascending
+                                            </label>
+                                            <br>
+                                            <label class="css-control css-control-primary css-radio">
+                                                <input type="radio" class="css-control-input" name="order_by" value="info_age_DESC">
+                                                <span class="css-control-indicator"></span> Decreasing
+                                            </label>
+                                        </div>
+
+
+                                    </div>
+
+                                </div>
+
+                                <div class="btn-group" role="group" id="order_by_video_btn">
+                                    <button type="button" class="btn btn-info dropdown-toggle" id="order_by_video_dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Videos</button>
+                                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
+                                        <div class="dropdown-item">
+
+                                            <label> Order by videos</label>
+                                            <br>
+                                            <label class="css-control css-control-primary css-radio">
+                                                <input type="radio" class="css-control-input" name="order_by" value="rank_videos_ASC">
+                                                <span class="css-control-indicator"></span> Ascending
+                                            </label>
+                                            <br>
+                                            <label class="css-control css-control-primary css-radio">
+                                                <input type="radio" class="css-control-input" name="order_by" value="rank_videos_DESC">
+                                                <span class="css-control-indicator"></span> Decreasing
+                                            </label>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+                                <div class="btn-group" role="group" id="order_by_subscriber_btn">
+                                    <button type="button" class="btn btn-info dropdown-toggle" id="order_by_subscriber_dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Subscribers</button>
+                                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
+                                        <div class="dropdown-item">
+
+                                            <label> Order by subscribers</label>
+                                            <br>
+                                            <label class="css-control css-control-primary css-radio">
+                                                <input type="radio" class="css-control-input" name="order_by" value="rank_subscribers_ASC">
+                                                <span class="css-control-indicator"></span> Ascending
+                                            </label>
+                                            <br>
+                                            <label class="css-control css-control-primary css-radio">
+                                                <input type="radio" class="css-control-input" name="order_by" value="rank_subscribers_DESC">
+                                                <span class="css-control-indicator"></span> Decreasing
+                                            </label>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+                                <div class="btn-group" role="group" id="order_by_joined_date_btn">
+                                    <button type="button" class="btn btn-info dropdown-toggle" id="order_by_joined_date_dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Joined date</button>
+                                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
+                                        <div class="dropdown-item">
+
+                                            <label> Order by joined date</label>
+                                            <br>
+                                            <label class="css-control css-control-primary css-radio">
+                                                <input type="radio" class="css-control-input" name="order_by" value="info_joined_date_ASC">
+                                                <span class="css-control-indicator"></span> Ascending
+                                            </label>
+                                            <br>
+                                            <label class="css-control css-control-primary css-radio">
+                                                <input type="radio" class="css-control-input" name="order_by" value="info_joined_date_DESC">
+                                                <span class="css-control-indicator"></span> Decreasing
+                                            </label>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+                                <div class="btn-group" role="group" id="order_by_rank_btn">
+                                    <button type="button" class="btn btn-info dropdown-toggle" id="order_by_rank_dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ranks</button>
+                                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
+                                        <div class="dropdown-item">
+
+                                            <label> Order by rank</label>
+                                        </div>
+
+                                        <div class="dropdown-item">
+                                            <div class="form-material">
+                                                <select class="form-control" id="which_rank" name="which_rank" onchange="changeValueRank()">
+                                                    <option value="weekly" selected >Weekly</option>
+                                                    <option value="monthly">Monthly</option>
+                                                    <option value="last_month">Last Month</option>
+                                                    <option value="yearly">Yearly</option>
+                                                </select>
+                                            </div>
+                                            <label class="css-control css-control-primary css-radio">
+                                                <input type="radio" class="css-control-input" name="order_by" value="rank_weekly_ASC" id="asc_rank">
+                                                <span class="css-control-indicator"></span> Ascending
+                                            </label>
+                                            <br>
+                                            <label class="css-control css-control-primary css-radio">
+                                                <input type="radio" class="css-control-input" name="order_by" value="rank_weekly_DESC" id="desc_rank">
+                                                <span class="css-control-indicator"></span> Decreasing
+                                            </label>
+                                            <hr>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            Increase by:
+                        </div>
+
+                        <div class="row">
+                            <div class="push">
+                                <button type="button" data-toggle="modal" data-target="#increase" class="btn btn-info">
+                                    <label id="p_increase_from">@if(request()->input('increase_from')) {{request()->input('increase_from')}} @else 1940-01-01 @endif</label>
+                                    to
+                                    <label id="p_increase_to"> @if(request()->input('increase_to')) {{request()->input('increase_to')}} @else {{date('Y-m-d')}} @endif</label>
+
+
+                                </button>
+                                <div class="modal fade" id="increase" tabindex="-1" role="dialog" aria-labelledby="modal-fadein" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="block block-themed block-transparent mb-0">
+                                                <div class="block-header bg-primary-dark text-center">
+                                                    <h3 class="block-title">Increase from date</h3>
+                                                    <div class="block-options">
+                                                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                                                            <i class="si si-close"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="block-content text-center">
+                                                    <div class="row">
+                                                        <div class="col-6">
+                                                            <div class="col-12">
+                                                                <label for="increase_from">Date from</label>
+                                                                <div class="form-material">
+                                                                    <input type="text" class="js-flatpickr form-control bg-white text-center" id="increase_from" name="increase_from" @if(request()->input('increase_from') != NULL) value="{{request()->input('increase_from')}}" placeholder="{{request()->input('increase_form')}}" @else  value="1940-01-01"  @endif placeholder="Y-m-d" onchange="increaseFromFunction()">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <div class="col-12">
+                                                                <label for="increase_from">Date to</label>
+                                                                <div class="form-material">
+                                                                    <input type="text" class="js-flatpickr form-control bg-white text-center" id="increase_to" name="increase_to" @if(request()->input('increase_to') != NULL) value="{{request()->input('increase_to')}}" placeholder="{{request()->input('increase_to')}}" @else  value="{{date('Y-m-d')}}" @endif placeholder="Y-m-d" onchange="increaseToFunction()">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-alt-secondary" data-dismiss="modal" onclick="closeAgeFunction()">Close</button>
+                                                <button type="button" class="btn btn-alt-success" data-dismiss="modal">
+                                                    <i class="fa fa-check"></i> Perfect
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                        <div class="row text-center">
+                            <div class="col-4">
+                            </div>
+                            <div class="col-4">
+
+
+                            </div>
+                            <div class="col-4">
+
+                            </div>
+                        </div>
+                        <div class="row align-items-center">
+                            <div class="col-sm-6 py-10">
+                            </div>
+                            <div class="col-sm-6 py-10 text-md-right">
+                                    <button type="submit" class="btn btn-alt-primary min-width-125">Search</button>
+                                </form>
+                                <br>
+                                <br>
+                                <form method="POST" action="{{route('pornstar_get')}}">
+                                    <button type="submit" class="btn btn-alt-warning min-width-125">Reset</button>
+                                </form>
+                            </div>
+
+                        </div>
+
+
             </div>
+
         </div>
-        @foreach($all_pornstars as $pornstar)
-            <div class="block">
-                <hr>
-                <div class="block-content block-content-full">
-                    <div class="row align-items-center">
-                        <div class="col-sm-6 py-10">
-                            <h3 class="h5 font-w700 mb-10">
-                                <img class="img-avatar img-avatar96 img-avatar-thumb" src="{{$pornstar->link_img}}" alt=""> {{$pornstar->full_name}}
-                            </h3>
-                            @if($pornstar->available == 0)
-                                <p class="font-size-sm text-muted mb-0">
-                                    Not Available
-                                </p>
-                            @else
-
-                                <p class="font-size-sm text-muted mb-0">
-                                    Age: {{$pornstar->age}}
-                                </p>
-                                <p class="font-size-sm mb-10">
-
-                                    @if($pornstar->modelHub != NULL)
-                                        <a class="mr-5 mb-5" href="{{$pornstar->modelHub}}">ModelHub</a>
-                                    @endif
-
-                                    @if($pornstar->official_site != NULL)
-                                        <a class="mr-5 mb-5" href="{{$pornstar->official_site}}">Official site</a>
-                                    @endif
-
-                                    @if($pornstar->instagram != NULL)
-                                        <a class="mr-5 mb-5" href="{{$pornstar->instagram}}">Instagram</a>
-                                    @endif
-
-                                    @if($pornstar->twitter != NULL)
-                                        <a class="mr-5 mb-5" href="{{$pornstar->twitter}}">Twitter</a>
-                                    @endif
-
-                                    @if($pornstar->fan_centro != NULL)
-                                        <a class="mr-5 mb-5" href="{{$pornstar->fan_centro}}">Fan Centro</a>
-                                    @endif
 
 
-                                </p>
-                            @endif
-                        </div>
-                        <div class="col-sm-6 py-10 text-md-right">
-                            <a class="btn btn-sm btn-outline-primary btn-rounded mr-5 my-5" href="javascript:void(0)">
-                                <i class="fa fa-wrench mr-1"></i> More Info
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endforeach
+    <div class="block">
+        <div class="block-header block-header-default">
+            <h3 class="block-title">
+                Pornstars @if(request()->input('order_by'))<small>order by {{request()->input('order_by')}}</small> @endif
+            </h3>
+        </div>
+        <div class="block-content">
+            <table class="js-table-sections table table-hover">
+                <thead>
+                <tr>
+                    <th style="width: 30px;"></th>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th style="width: 15%;">Type</th>
+                    <th class="d-none d-sm-table-cell" style="width: 20%;">Joined date</th>
+                </tr>
+                </thead>
+                @foreach($all_pornstars as $pornstar)
+                    @php
+                    $pornController = new \App\Http\Controllers\PornstarController();
+                    $dates = $pornController->getTest($pornstar->id, $date_increase);
+                    $increase = getData($dates);
+                    @endphp
+
+                    <tbody class="js-table-sections-header">
+                    <tr>
+                        <td class="text-center">
+                            <i class="fa fa-angle-right"></i>
+                        </td>
+                        <td>
+                            <img class="img-avatar img-avatar96 img-avatar-thumb" alt="" src="{{$pornstar->link_img}}" >
+                        </td>
+                        <td class="font-w600">
+                            {{$pornstar->full_name}}
+                            <p class="font-size-sm text-muted mb-0">
+                                Age: {{$pornstar->age}}
+                            </p>
+                            <p class="font-size-sm mb-10">
+
+                                @if($pornstar->modelhub != NULL)
+                                    <a class="mr-5 mb-5" href="{{$pornstar->modelhub}}">ModelHub</a>
+                                @endif
+
+                                @if($pornstar->website != NULL)
+                                    <a class="mr-5 mb-5" href="{{$pornstar->website}}">Official site</a>
+                                @endif
+
+                                @if($pornstar->instagram != NULL)
+                                    <a class="mr-5 mb-5" href="{{$pornstar->instagram}}">Instagram</a>
+                                @endif
+
+                                @if($pornstar->twitter != NULL)
+                                    <a class="mr-5 mb-5" href="{{$pornstar->twitter}}">Twitter</a>
+                                @endif
+
+                                @if($pornstar->fan_centro != NULL)
+                                    <a class="mr-5 mb-5" href="{{$pornstar->fan_centro}}">Fan Centro</a>
+                                @endif
+                            </p>
+
+
+
+                        </td>
+                        <td class="font-w600">{{$pornstar->type}}</td>
+                        <td class="d-none d-sm-table-cell">
+                            <em class="text-muted">{{$pornstar->joined_date}}</em>
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tbody>
+                    <tr>
+                        <td class="text-center"></td>
+                        <td class="font-w600">Average Visual/video</td>
+                        <td class="font-w600">{{getAverageVideo_Visuals($pornstar->videos, $pornstar->visuals)}} video {{$pornstar->videos}} Visual {{$pornstar->visuals}}</td>
+                        <td class="font-size-sm"></td>
+                        <td class="d-none d-sm-table-cell"></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center"></td>
+                        <td class="font-w600">Increase video</td>
+                        <td class="font-w600 @if($increase['videos'] >= 0) text-success">+ @else text-danger"> @endif{{$increase['videos']}} %</td>
+                        <td class="font-size-sm">From {{$date_increase['from']}}</td>
+                        <td class="font-size-sm">To {{$date_increase['to']}}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-center"></td>
+                        <td class="font-w600">Increase subscriber</td>
+                        <td class="font-w600 @if($increase['subscribers'] >= 0) text-success">+ @else text-danger"> @endif{{$increase['subscribers']}} %</td>
+                        <td class="font-size-sm">From {{$date_increase['from']}}</td>
+                        <td class="font-size-sm">To {{$date_increase['to']}}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-center"></td>
+                        <td class="font-w600">Increase visual</td>
+                        <td class="font-w600 @if($increase['visuals'] >= 0) text-success">+ @else text-danger"> @endif{{$increase['visuals']}} %</td>
+                        <td class="font-size-sm">From {{$date_increase['from']}}</td>
+                        <td class="font-size-sm">To {{$date_increase['to']}}</td>
+                    </tr>
+{{--                    <tr>--}}
+{{--                        <td class="text-center"></td>--}}
+{{--                        <td class="font-w600 text-success">+ $120,00</td>--}}
+{{--                        <td class="font-size-sm">Stripe</td>--}}
+{{--                        <td class="d-none d-sm-table-cell">--}}
+{{--                            <span class="font-size-sm text-muted">October 16, 2017 12:16</span>--}}
+{{--                        </td>--}}
+{{--                    </tr>--}}
+                    </tbody>
+
+                @endforeach
+            </table>
+        </div>
+    </div>
+
+
     </div>
 
 @endsection
 @section('js_after')
     <script src="{{asset('js/plugins/ion-rangeslider/js/ion.rangeSlider.min.js')}}"></script>
-    <script>jQuery(function(){ Codebase.helpers(['rangeslider']); });</script>
+    <script>jQuery(function(){ Codebase.helpers(['rangeslider', 'flatpickr', 'table-tools']); });</script>
+    <script src="{{asset('js/plugins/flatpickr/flatpickr.min.js')}}"></script>
 
     <script>
+
         function myfunc(){
             // console.log(document.getElementById('example-rangeslider4').value);
         }
 
-        function closeAgeFunction(){
 
-            $("#example-rangeslider4").ionRangeSlider({
-                from: 18,
-                to: 80,
-            });
-            // console.log('prov');
-
+        function changeValueRank(){
+            document.getElementById('asc_rank').value = 'rank_' + document.getElementById('which_rank').value + '_ASC';
+            document.getElementById('desc_rank').value = 'rank_' + document.getElementById('which_rank').value + '_DESC';
         }
 
 
-        var $d3 = $("#demo_3");
+        function moreThanAge(){
+            if(document.getElementById('less_than_age').value < document.getElementById('more_than_age').value){
+                document.getElementById('more_than_age').value = document.getElementById('less_than_age').value;
+            }
 
-        $d3.ionRangeSlider({
-            skin: "big",
-            min: 0,
-            max: 10000,
-            from: 5000
+            if(document.getElementById('more_than_age').value < '18'){
+                document.getElementById('more_than_age').value = '18';
+            }
+            document.getElementById('less_than_age').setAttribute('min', document.getElementById('more_than_age').value);
+            document.getElementById('more').innerHTML = document.getElementById('more_than_age').value;
+        }
+
+        function lessThanAge(){
+
+            if(document.getElementById('less_than_age').value < document.getElementById('more_than_age').value){
+                document.getElementById('less_than_age').value = document.getElementById('more_than_age').value;
+            }
+            document.getElementById('less').innerHTML = document.getElementById('less_than_age').value;
+            document.getElementById('more_than_age').setAttribute('max', document.getElementById('less_than_age').value);
+
+        }
+
+        function increaseFromFunction(){
+            console.log('ciao');
+            if(document.getElementById('increase_to').value < document.getElementById('increase_from').value){
+                document.getElementById('increase_from').value = document.getElementById('increase_to').value;
+            }
+            document.getElementById('p_increase_from').innerHTML = document.getElementById('increase_from').value;
+        }
+
+        function increaseToFunction(){
+            if(document.getElementById('increase_from').value > document.getElementById('increase_to').value){
+                document.getElementById('increase_to').value = document.getElementById('increase_from').value;
+            }
+            document.getElementById('p_increase_to').innerHTML = document.getElementById('increase_to').value;
+        }
+
+
+        $('.dropdown-menu').on({
+            "click":function(e){
+                e.stopPropagation();
+            }
         });
 
-        $d3.on("change", function () {
-            var $inp = $(this);
-            var from = $inp.prop("value"); // reading input value
-            var from2 = $inp.data("from"); // reading input data-from attribute
+        function ajaxCall(){
+            var form_data = new FormData(document.getElementById('search_form'));
+            form_data.append('orberby', 'asc');
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url : "{{route('pornstar_get')}}",
+                type: "POST",
+                data: form_data,
+                dataType: 'json',
+                cache : false,
+                contentType: false,
+                processData: false,
+                success: function(data) {
+                    console.log(data)
+                },
+                fail: function () {
+                    console.log('fail')
+                }
 
-            console.log(from, from2); // FROM value
-        });
+            });
+
+        }
 
     </script>
 @endsection

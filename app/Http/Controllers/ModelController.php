@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Pornstars;
+use App\Pornstar;
 use Illuminate\Http\Request;
 use App\PornstarRank;
 
@@ -17,7 +17,7 @@ class ModelController extends Controller
     {
 
         //
-        $all_pornstars = Pornstars::all();
+        $all_pornstars = Pornstar::all();
 
         return view('models', compact('all_models'));
 

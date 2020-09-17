@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Pornstars;
+use App\Pornstar;
 
 class RenameJoinedColumnSecondStep extends Migration
 {
@@ -16,7 +16,7 @@ class RenameJoinedColumnSecondStep extends Migration
     {
         Schema::table('pornstars', function (Blueprint $table) {
             //
-            $pornstars = Pornstars::all();
+            $pornstars = Pornstar::all();
             foreach ($pornstars as $pornstar){
                 $pornstar->update(['joined_date' => $pornstar->joined]);
             }
@@ -32,7 +32,7 @@ class RenameJoinedColumnSecondStep extends Migration
     {
         Schema::table('pornstars', function (Blueprint $table) {
             //
-            $pornstars = Pornstars::all();
+            $pornstars = Pornstar::all();
             foreach ($pornstars as $pornstar){
                 $pornstar->update(['joined_date' => NULL]);
             }

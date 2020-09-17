@@ -6,7 +6,7 @@ use App\Pornhub;
 use App\PornhubActor;
 use App\PornstarData;
 use App\PornstarRank;
-use App\Pornstars;
+use App\Pornstar;
 use Illuminate\Console\Command;
 use App\ModelData;
 
@@ -72,7 +72,7 @@ class ParsingModelCommand extends Command
 
                         //if is not available
                         if ($pornstar_data['available'] == 0) {
-                            if ($pornstar = Pornstars::where('full_name', $pornstar_data['pornstar_name'])->first()) {
+                            if ($pornstar = Pornstar::where('full_name', $pornstar_data['pornstar_name'])->first()) {
                                 $rank_date = date(PornstarRank::where('pornstar_id', $pornstar->id)->latest('rank_by_date')->first());
                                 if ($rank_date != date('Y-m-d')) {
                                     PornstarRank::create([
@@ -82,7 +82,7 @@ class ParsingModelCommand extends Command
                                 }
 
                             } else {
-                                $info_pornstar = Pornstars::create([
+                                $info_pornstar = Pornstar::create([
                                     'full_name' => $pornstar_data['pornstar_name'],
                                     'username' => $username_verified_pornstar['username'],
                                     'verified' => $pornstar_data['verified'],
@@ -95,7 +95,7 @@ class ParsingModelCommand extends Command
 
                             }
                         } elseif ($pornstar_data['available'] == 1) {
-                            if ($pornstar = Pornstars::where('full_name', $pornstar_data['pornstar_name'])->where('birth_date', $pornstar_data['birth_date'])->first()) {
+                            if ($pornstar = Pornstar::where('full_name', $pornstar_data['pornstar_name'])->where('birth_date', $pornstar_data['birth_date'])->first()) {
                                 $pornstar->update([
                                     'link_img' => $pornstar_data['link_img'],
                                     'age' => $pornstar_data['age'],
@@ -126,7 +126,7 @@ class ParsingModelCommand extends Command
                                 }
 
                             } else {
-                                $info_pornstar = Pornstars::create([
+                                $info_pornstar = Pornstar::create([
                                     'full_name' => $pornstar_data['pornstar_name'],
                                     'username' => $pornstar_data['username'],
                                     'link_img' => $pornstar_data['link_img'],
@@ -181,7 +181,7 @@ class ParsingModelCommand extends Command
                         $model_data = $pornhub->getModel($username_verified_model['username']);
 
                         if ($model_data['available'] == 0) {
-                            if ($model = Pornstars::where('full_name', $model_data['model_name'])->first()) {
+                            if ($model = Pornstar::where('full_name', $model_data['model_name'])->first()) {
                                 $rank_date = date(PornstarRank::where('pornstar_id', $model->id)->latest('rank_by_date')->first());
                                 if ($rank_date != date('Y-m-d')) {
                                     PornstarRank::create([
@@ -190,7 +190,7 @@ class ParsingModelCommand extends Command
                                     ]);
                                 }
                             } else {
-                                $info_model = Pornstars::create([
+                                $info_model = Pornstar::create([
                                     'full_name' => $model_data['model_name'],
                                     'username' => $model_data['username'],
                                     'available' => $model_data['available'],
@@ -203,7 +203,7 @@ class ParsingModelCommand extends Command
                             }
                         } elseif ($model_data['available'] == 1) {
 
-                            if ($model = Pornstars::where('full_name', $model_data['model_name'])->where('birth_date', $model_data['birth_date'])->first()) {
+                            if ($model = Pornstar::where('full_name', $model_data['model_name'])->where('birth_date', $model_data['birth_date'])->first()) {
                                 $model->update([
                                     'link_img' => $model_data['link_img'],
                                     'username' => $model_data['username'],
@@ -235,7 +235,7 @@ class ParsingModelCommand extends Command
                                 }
 
                             } else {
-                                $info_model = Pornstars::create([
+                                $info_model = Pornstar::create([
                                     'full_name' => $model_data['model_name'],
                                     'username' => $model_data['username'],
                                     'link_img' => $model_data['link_img'],

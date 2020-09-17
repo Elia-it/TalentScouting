@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Pornstars;
+use App\Pornstar;
 
 class RenameJoinedColumThirdStep extends Migration
 {
@@ -31,7 +31,7 @@ class RenameJoinedColumThirdStep extends Migration
             //
             $table->date('joined')->nullable();
 
-            $pornstars = Pornstars::all();
+            $pornstars = Pornstar::all();
 
             foreach ($pornstars as $pornstar){
                 $pornstar->update(['joined' => $pornstar->joined_date]);

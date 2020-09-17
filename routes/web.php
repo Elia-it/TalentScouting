@@ -23,13 +23,26 @@ Route::view('/pages/datatables', 'pages.datatables');
 Route::view('/pages/blank', 'pages.blank');
 
 
-Route::get('/test', 'ModelController@index');
+Route::get('/test', 'Test@test_mo');
 
 Route::get('/Scraping', 'Test@models');
 
 //Route::get('/models', 'ModelController@index')->name('models');
 //Route::get('/pornstars','ModelController@indexPornstar')->name('pornstars');
 
-Route::get('/new_mo', 'Test@test_mo');
+// Route::get('/new_mo', 'Test@test_mo');
 
-Route::get('/pornstars', 'PornstarController@getPornstars');
+Route::get('/pornstars', 'PornstarController@index')->name('pornstar_get');
+Route::post('/pornstars','PornstarController@index')->name('pornstar_get');
+
+Route::post('/x', 'PornstarController@index')->name('pornstar.index');
+
+Route::get('/test1', 'PornstarController@test1')->name('test1');
+Route::post('/test1', 'PornstarController@test1')->name('test1');
+
+Route::post('/test2', 'PornstarController@test2')->name('test2');
+
+
+
+
+

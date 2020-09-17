@@ -12,12 +12,12 @@ class PornstarRank extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'pornstar_id', 'weekly', 'last_month', 'monthly', 'yearly', 'rank_by_date', 'video', 'visual', 'subscriber'
+        'pornstar_id', 'weekly', 'last_month', 'monthly', 'yearly', 'rank_by_date', 'videos', 'visuals', 'subscribers'
     ];
 
 
     public function amateur_model()
     {
-        return $this->hasManyThrough('App\Pornstars', 'id', 'pornstar_id');
+        return $this->hasManyThrough('App\Pornstar', 'id', 'pornstar_id');
     }
 }

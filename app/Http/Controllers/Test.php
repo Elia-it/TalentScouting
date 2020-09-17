@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Pornstars;
+use App\Pornstar;
 use Illuminate\Http\Request;
 use App\simple_html_dom;
 use Sunra\PhpSimple\HtmlDomParser;
@@ -303,30 +303,12 @@ class Test extends Controller
 
     public function test_mo(){
 
-        $all_pornstars = [];
-        $all_amateurs = [];
         $pornhub = new Pornhub();
-        $page = 1;
-        for ($counter = 1; $counter <= $page; $counter++){
-
-            $pornstars = $pornhub->getPornstarsByPage('pornstar', $counter);
-
-            foreach ($pornstars as $pornstar){
-                $pornstar_data = $pornhub->getPornstarTest('pornstar', $pornstar['username']);
-                var_dump($pornstar_data);
-            }
-
-//            $amateur_models = $pornhub->getPornstarsByPage('model', $counter);
-//
-//            foreach ($amateur_models as $model){
-//                $model_data = $pornhub->getPornstarTest('model', $model['username']);
-//
-//                $all_amateurs[] = $model_data;
-//            }
-
-        }
-
-
-        return view('test', compact('all_pornstars'));
+        var_dump($pornhub->testScrape('https://www.pornhub.com/pornstar/jennifer-lawrence'));
+        var_dump($pornhub->testScrape('https://www.pornhub.com/pornstar/lola-taylor'));
+        var_dump($pornhub->testScrape('https://www.pornhub.com/model/eva-elfie'));
+        var_dump($pornhub->testScrape('https://www.pornhub.com/model/triss-merigold'));
+        var_dump($pornhub->testScrape('https://www.pornhub.com/model/laikaanal'));
+        return ;
     }
 }

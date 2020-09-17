@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Pornhub;
 use App\PornstarRank;
-use App\Pornstars;
+use App\Pornstar;
 use Illuminate\Console\Command;
 
 class ParsingPornstarsCommand extends Command
@@ -49,26 +49,26 @@ class ParsingPornstarsCommand extends Command
             $all_pornstars = $pornhub->getPornstarsByPage('pornstar', $counter);
             foreach ($all_pornstars as $pornstar){
                 $this->info($pornstar['username']);
-                $pornstar_class = new Pornstars();
+                $pornstar_class = new Pornstar();
                 $pornstar_rank = new PornstarRank();
-                $info_pornstar = $pornhub->getPornstarTest($pornstar['type'], $pornstar['username']);
+                $info_pornstar = $pornhub->getPornstarByTypeAndUsername($pornstar['type'], $pornstar['username']);
 
 
 
-                if($pornstar_data = Pornstars::where('username', $pornstar['username'])->first()){
+                if($pornstar_data = Pornstar::where('username', $pornstar['username'])->first()){
                     $pornstar_last_rank = PornstarRank::where('pornstar_id', $pornstar_data['id'])->latest('rank_by_date')->first();
                     if(date('Y-m-d', strtotime($pornstar_last_rank['rank_by_date'])) != date('Y-m-d')){
                         $pornstar_rank['pornstar_id'] = $pornstar_data['id'];
                         $pornstar_rank['rank_by_date'] = date('Y-m-d H:i:s');
                         $pornstar_rank->fill($info_pornstar);
                         $pornstar_rank->save();
-                    }else{
                     }
                 }else{
                     $info_pornstar['verified'] = $pornstar['verified'];
                     $info_pornstar['type'] = $pornstar['type'];
                     $pornstar_class->fill($info_pornstar);
                     $pornstar_class->save();
+
 
                     $info_pornstar['pornstar_id'] = $pornstar_class['id'];
                     $pornstar_rank->fill($info_pornstar);

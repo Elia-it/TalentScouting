@@ -558,8 +558,120 @@
                 @endforeach
             </table>
         </div>
-    </div>
 
+
+    </div>
+    <div class="row">
+        <div class="mr-auto">
+            <div class="form-material floating" style="bottom: 25px; left: 15px">
+                <input type="text" class="form-control" id="go_to_page_in" name="go_to_page_in" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                <label for="go_to_page_in">Go to page</label>
+            </div>
+        </div>
+        <div class="ml-auto">
+            <nav aria-label="Page navigation">
+                <ul class="pagination pagination-lg">
+                    <li class="page-item">
+                        <a class="page-link" href="@if(isset($_GET['page']) AND $_GET['page'] != 1) ?page={{$_GET['page'] - 1}} @else ?page=1 @endif" aria-label="Previous">
+                                                    <span aria-hidden="true">
+                                                        <i class="fa fa-angle-left"></i>
+                                                    </span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
+
+                    @if(!isset($_GET['page']) OR $_GET['page'] == 1)
+                        <li class="page-item active">
+                            <a class="page-link" href="?page=1">1</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page=2">2</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" disabled="">...</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{$pages}}">{{$pages}}</a>
+                        </li>
+                    @elseif(isset($_GET['page']))
+                        @if($_GET['page'] < 3)
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{$_GET['page'] - 1}}">{{$_GET['page'] - 1}}</a>
+                            </li>
+                            <li class="page-item active">
+                                <a class="page-link" href="?page={{$_GET['page']}}">{{$_GET['page']}}</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{$_GET['page'] + 1}}">{{$_GET['page'] + 1}}</a>
+                            </li>
+                        @elseif($_GET['page'] >= 3 AND $_GET['page'] <= $pages - 2)
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1">1</a>
+                            </li>
+                             @if($_GET['page'] >3)
+                                <li class="page-item">
+                                    <a class="page-link" disabled="">...</a>
+                                </li>
+                            @endif
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{$_GET['page'] - 1}}">{{$_GET['page'] - 1}}</a>
+                            </li>
+                            <li class="page-item active">
+                                <a class="page-link" href="?page={{$_GET['page']}}">{{$_GET['page']}}</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{$_GET['page'] + 1}}">{{$_GET['page'] + 1}}</a>
+                            </li>
+                            @if($_GET['page'] < $pages - 2)
+                                <li class="page-item">
+                                    <a class="page-link" disabled="">...</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{$pages}}">{{$pages}}</a>
+                                </li>
+                            @endif
+
+                        @elseif($_GET['page'] > $pages - 2)
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1">1</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" disabled="">...</a>
+                            </li>
+                            @if($_GET['page'] == $pages)
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{$_GET['page'] - 1}}">{{$_GET['page'] - 1}}</a>
+                                </li>
+                                <li class="page-item active">
+                                    <a class="page-link" href="?page={{$_GET['page']}}">{{$_GET['page']}}</a>
+                                </li>
+                            @else
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{$_GET['page'] - 1}}">{{$_GET['page'] - 1}}</a>
+                            </li>
+                                <li class="page-item active">
+                                    <a class="page-link" href="?page={{$_GET['page']}}">{{$_GET['page']}}</a>
+                                </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{$_GET['page'] + 1}}">{{$_GET['page'] + 1}}</a>
+                            </li>
+                            @endif
+
+                        @endif
+
+                    @endif
+                    <li class="page-item">
+                        <a class="page-link" href="@if( isset($_GET['page'])) ?page={{$_GET['page'] + 1}} @endif" aria-label="Next">
+                                                    <span aria-hidden="true">
+                                                        <i class="fa fa-angle-right"></i>
+                                                    </span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
 
     </div>
 
@@ -626,32 +738,14 @@
             }
         });
 
-        function ajaxCall(){
-            var form_data = new FormData(document.getElementById('search_form'));
-            form_data.append('orberby', 'asc');
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        $(document).ready(function (){
+            const go_to_page = document.getElementById('go_to_page_in');
+            go_to_page.addEventListener('keypress', function (event){
+                if(event.key === "Enter"){
+                    location.replace('?page='+document.getElementById('go_to_page_in').value);
                 }
-            });
-            $.ajax({
-                url : "{{route('pornstar_get')}}",
-                type: "POST",
-                data: form_data,
-                dataType: 'json',
-                cache : false,
-                contentType: false,
-                processData: false,
-                success: function(data) {
-                    console.log(data)
-                },
-                fail: function () {
-                    console.log('fail')
-                }
-
-            });
-
-        }
+            })
+        })
 
     </script>
 @endsection

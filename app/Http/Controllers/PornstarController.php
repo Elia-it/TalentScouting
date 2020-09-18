@@ -13,6 +13,9 @@ class PornstarController extends Controller
 {
     //
     public function index(Request $request){
+
+
+
         $select = '*';
         $query1 = '(SELECT subscribers FROM pornstars_ranks where pornstars.id = pornstars_ranks.pornstar_id order by pornstars_ranks.rank_by_date desc limit 1) as subscribers';
         $query2 = '(SELECT visuals FROM pornstars_ranks where pornstars.id = pornstars_ranks.pornstar_id order by pornstars_ranks.rank_by_date desc limit 1) as visuals';
@@ -21,11 +24,13 @@ class PornstarController extends Controller
         $query5 = '(SELECT monthly FROM pornstars_ranks where pornstars.id = pornstars_ranks.pornstar_id order by pornstars_ranks.rank_by_date desc limit 1) as monthly';
         $query6 = '(SELECT last_month FROM pornstars_ranks where pornstars.id = pornstars_ranks.pornstar_id order by pornstars_ranks.rank_by_date desc limit 1) as last_month';
         $query7 = '(SELECT yearly FROM pornstars_ranks where pornstars.id = pornstars_ranks.pornstar_id order by pornstars_ranks.rank_by_date desc limit 1) as yearly';
+        $query8 = '(SELECT rank_by_date FROM pornstars_ranks where pornstars.id = pornstars_ranks.pornstar_id order by pornstars_ranks.rank_by_date desc limit 1) as rank_by_date';
 
 
 
-        $query = Pornstar::select($select, DB::raw($query1), DB::raw($query2), DB::raw($query3), DB::raw($query4), DB::raw($query5), DB::raw($query6), DB::raw($query7))
-            ->join('pornstars_ranks', 'pornstars.id', '=', 'pornstars_ranks.pornstar_id');
+        $query = Pornstar::select($select)
+            ->join('pornstars_ranks', 'pornstars.id', '=', 'pornstars_ranks.pornstar_id')
+            ->groupby('pornstars.id');
 
         if($request->pornstar == NULL && $request->amateur_model == 'on'){
             $query->where('type', '=', 'model');
@@ -116,10 +121,32 @@ class PornstarController extends Controller
         }
 
 
-        $query->limit(10);
+        $count_pornstars = $query->get()->count();
 
-//
+        $limit = 20;
+
+        $pages = ceil($count_pornstars / $limit);
+
+        $page = min($pages, filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT, array(
+            'options' => array(
+                'default'   => 1,
+                'min_range' => 1,
+            ),
+        )));
+
+        $offset = ($page - 1) * $limit;
+
+
+        $query->limit($limit);
+        $query->offset($offset);
+
+
+//        dd($count_pornstars);
+
         $all_pornstars = $query->get();
+
+
+
 //        dd($all_pornstars);
 //        var_dump($all_pornstars);
 
@@ -140,7 +167,7 @@ class PornstarController extends Controller
             $date_increase['to'] = date('Y-m-d');
         }
 
-        return view('pornstars', compact('all_pornstars', 'date_increase'));
+        return view('pornstars', compact('all_pornstars', 'date_increase', 'pages'));
 
     }
 

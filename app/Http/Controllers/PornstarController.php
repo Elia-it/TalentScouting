@@ -13,20 +13,30 @@ class PornstarController extends Controller
 {
     //
     public function index(Request $request){
-        $query = Pornstar::select('porns.*', 'ranks1.*')->from('pornstars as porns')->join('pornstars_ranks as ranks1', 'porns.id', '=', 'ranks1.pornstar_id')
-            ->leftJoin('pornstars_ranks as ranks2', function ($join){
-                    $join->on(function($ranks2){
-                        $ranks2->where('porns.id', '=', DB::raw('ranks2.pornstar_id'))
-                            ->where(function($where){
-                                $where->where('ranks1.rank_by_date', '<', DB::raw('ranks2.rank_by_date'))
-                                    ->orWhere(function($where2){
-                                        $where2->where('ranks1.rank_by_date', '=', DB::raw('ranks2.rank_by_date'))
-                                            ->where('ranks1.id', '<', DB::raw('ranks2.id'));
-                                    });
-                            });
-                    });
-        })->where('ranks2.id', '=', NULL)
-            ->toSql();
+
+        $select = 'pornstars.full_name, pornstars.type, pornstars.link_img, pornstars.age, pornstars.joined_date, pornstars.modelhub, pornstars.website, pornstars.twitter, pornstars.instagram, pornstars.fan_centro, last_rec.weekly, last_rec.monthly, last_rec.last_month, last_rec.yearly, last_rec.videos, last_rec.visuals, last_rec.subscribers';
+        $query = Pornstar::join(DB::raw('(
+            SELECT
+              pornstars_ranks.*
+            FROM
+              (SELECT
+                 pornstar_id, MAX(rank_by_date) AS rank_by_date
+               FROM
+                 pornstars_ranks
+               GROUP BY
+                 pornstar_id ) AS latest_rank
+            INNER JOIN
+              pornstars_ranks
+            ON
+              pornstars_ranks.pornstar_id = latest_rank.pornstar_id AND
+              pornstars_ranks.rank_by_date = latest_rank.rank_by_date
+            )last_rec'), function($join){
+                $join->on('pornstars.id', '=', 'last_rec.pornstar_id');
+        })
+        ->select(explode(', ', $select));
+
+
+//      dd($test[8]);
 
         if($request->pornstar == NULL && $request->amateur_model == 'on'){
             $query->where('type', '=', 'model');
@@ -49,7 +59,7 @@ class PornstarController extends Controller
 
         }
 
-        if($request->has('verified') && $request->verified == 'on'){
+        if($request->has('verifiSELECT pornstars.id, pornstars_ranks.rank_by_date from pornstars_ranks join pornstars ON pornstars.id = pornstars_ranks.pornstar_id GROUP BY pornstars.id ed') && $request->verified == 'on'){
             $query->where('verified', '=', '1');
         }elseif($request->has('not_verified') && $request->not_verified == 'on'){
             $query->where('verified', '=', '0');
@@ -82,15 +92,15 @@ class PornstarController extends Controller
 
 
         if($request->has('more_than_video') && !empty($request->more_than_video)){
-            $query->where('ranks1.videos', '>=', $request->more_than_video);
+            $query->where('last_rec.videos', '>=', $request->more_than_video);
         }
 
         if($request->has('more_than_subscriber') && !empty($request->more_than_subscriber)){
-            $query->where('ranks1.subscribers', '>=', $request->more_than_subscriber);
+            $query->where('last_rec.subscribers', '>=', $request->more_than_subscriber);
         }
 
         if($request->has('more_than_visual') && !empty($request->more_than_visual)){
-            $query->where('ranks1.visuals', '>=', $request->more_than_visual);
+            $query->where('last_rec.visuals', '>=', $request->more_than_visual);
         }
 
 
@@ -101,7 +111,7 @@ class PornstarController extends Controller
 
                 preg_match('~rank_(.*)_(.*)~si', $request->order_by, $orderby);
 
-                $order_by_rank = 'ranks1.' . $orderby[1];
+                $order_by_rank = 'last_rec.' . $orderby[1];
                 $asc_desc = $orderby[2];
                 $query->orderBy($order_by_rank, $asc_desc);
 
@@ -115,7 +125,7 @@ class PornstarController extends Controller
                 }
             }
         }else{
-            $query->orderBy('pornstar_id', 'ASC');
+            $query->orderby('pornstar_id', 'ASC');
         }
 
 
@@ -156,7 +166,7 @@ class PornstarController extends Controller
         if($request->has('increase_from') && $request->increase_from != NULL){
             $date_increase['from'] = $request->increase_from;
         }else{
-            $date_increase['from'] = date('1940-01-01');
+            $date_increase['from'] = date('2019-01-01');
         }
         if($request->has('increase_to') && $request->increase_to != NULL){
             $date_increase['to'] = $request->increase_to;

@@ -93,13 +93,13 @@
         <!-- <script src="{{ mix('js/laravel.app.js') }}"></script> -->
 
         @yield('js_after')
-{{--    <script>--}}
-{{--        window.addEventListener('beforeunload', function (e) {--}}
-{{--            Codebase.loader('show');--}}
-{{--        });--}}
-{{--        $(window).on("load",function(){--}}
-{{--            Codebase.loader('hide');--}}
-{{--        });--}}
-{{--    </script>--}}
+    <script>
+        window.addEventListener('beforeunload', function (e) {
+            Codebase.loader('show');
+        });
+        $(window).on("load",function(){
+            Codebase.loader('hide');
+        });
+    </script>
     </body>
 </html>

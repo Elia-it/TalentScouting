@@ -360,7 +360,7 @@
                         <div class="row">
                             <div class="push">
                                 <button type="button" data-toggle="modal" data-target="#increase" class="btn btn-info">
-                                    <label id="p_increase_from">@if(request()->input('increase_from')) {{request()->input('increase_from')}} @else 1940-01-01 @endif</label>
+                                    <label id="p_increase_from">@if(request()->input('increase_from')) {{request()->input('increase_from')}} @else 2019-01-01 @endif</label>
                                     to
                                     <label id="p_increase_to"> @if(request()->input('increase_to')) {{request()->input('increase_to')}} @else {{date('Y-m-d')}} @endif</label>
 
@@ -385,7 +385,7 @@
                                                             <div class="col-12">
                                                                 <label for="increase_from">Date from</label>
                                                                 <div class="form-material">
-                                                                    <input type="text" class="js-flatpickr form-control bg-white text-center" id="increase_from" name="increase_from" @if(request()->input('increase_from') != NULL) value="{{request()->input('increase_from')}}" placeholder="{{request()->input('increase_form')}}" @else  value="1940-01-01"  @endif placeholder="Y-m-d" onchange="increaseFromFunction()">
+                                                                    <input type="text" class="js-flatpickr form-control bg-white text-center" id="increase_from" name="increase_from" @if(request()->input('increase_from') != NULL) value="{{request()->input('increase_from')}}" placeholder="{{request()->input('increase_form')}}" @else  value="2019-01-01"  @endif placeholder="Y-m-d" onchange="increaseFromFunction()">
                                                                 </div>
                                                             </div>
                                                         </div>

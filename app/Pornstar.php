@@ -14,8 +14,8 @@ class Pornstar extends Model
         'full_name', 'username', 'type', 'verified', 'last_name', 'link_img', 'available', 'age', 'birth_date', 'joined_date', 'joined', 'modelhub', 'website', 'twitter', 'fan_centro', 'instagram'
     ];
 
-    public function pornstar_rank(){
-        return $this->hasMany('App\PornstarRank', 'pornstar_id', 'id');
-    }
+//    public function pornstar_rank(){
+//        return $this->hasMany('App\PornstarRank', 'pornstar_id', 'id');
+//    }
 }
 

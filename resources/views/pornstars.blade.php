@@ -441,11 +441,8 @@
 
                         </div>
 
-
+                    </div>
             </div>
-
-        </div>
-
 
     <div class="block">
         <div class="block-header block-header-default">
@@ -564,7 +561,7 @@
     <div class="row">
         <div class="mr-auto">
             <div class="form-material floating" style="bottom: 25px; left: 15px">
-                <input type="text" class="form-control" id="go_to_page_in" name="go_to_page_in" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                <input type="text" class="form-control" id="go_to_page_in" name="go_to_page_in" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"  change="goToPageFunction()">
                 <label for="go_to_page_in">Go to page</label>
             </div>
         </div>
@@ -673,8 +670,6 @@
         </div>
     </div>
 
-    </div>
-
 @endsection
 @section('js_after')
     <script src="{{asset('js/plugins/ion-rangeslider/js/ion.rangeSlider.min.js')}}"></script>
@@ -683,9 +678,6 @@
 
     <script>
 
-        function myfunc(){
-            // console.log(document.getElementById('example-rangeslider4').value);
-        }
 
 
         function changeValueRank(){
@@ -738,6 +730,33 @@
             }
         });
 
+        function ajaxCall(){
+            var form_data = new FormData(document.getElementById('search_form'));
+            form_data.append('orberby', 'asc');
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url : "{{route('pornstar_get')}}",
+                type: "POST",
+                data: form_data,
+                dataType: 'json',
+                cache : false,
+                contentType: false,
+                processData: false,
+                success: function(data) {
+                    console.log(data)
+                },
+                fail: function () {
+                    console.log('fail')
+                }
+
+            });
+
+        }
+
         $(document).ready(function (){
             const go_to_page = document.getElementById('go_to_page_in');
             go_to_page.addEventListener('keypress', function (event){
@@ -746,6 +765,7 @@
                 }
             })
         })
+
 
     </script>
 @endsection

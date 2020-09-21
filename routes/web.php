@@ -42,6 +42,7 @@ Route::post('/test1', 'PornstarController@test1')->name('test1');
 
 Route::post('/test2', 'PornstarController@test2')->name('test2');
 
+Route::view('/testcss', 'dashboard');
 
 
 

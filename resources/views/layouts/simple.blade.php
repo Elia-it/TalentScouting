@@ -13,7 +13,6 @@
         <!-- CSRF Token -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-
         <!-- Icons -->
         <link rel="shortcut icon" href="{{ asset('media/favicons/favicon.png') }}">
         <link rel="icon" sizes="192x192" type="image/png" href="{{ asset('media/favicons/favicon-192x192.png') }}">
@@ -79,7 +78,9 @@
         <div id="page-container" class="main-content-boxed">
             <!-- Main Container -->
             <main id="main-container">
+
                 @yield('content')
+
             </main>
             <!-- END Main Container -->
         </div>
@@ -92,5 +93,13 @@
         <!-- <script src="{{ mix('js/laravel.app.js') }}"></script> -->
 
         @yield('js_after')
+{{--    <script>--}}
+{{--        window.addEventListener('beforeunload', function (e) {--}}
+{{--            Codebase.loader('show');--}}
+{{--        });--}}
+{{--        $(window).on("load",function(){--}}
+{{--            Codebase.loader('hide');--}}
+{{--        });--}}
+{{--    </script>--}}
     </body>
 </html>

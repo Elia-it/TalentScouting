@@ -458,7 +458,7 @@
         @php
             $date['from'] = '2020-09-06';
             $date['to'] = '2020-10-07';
-            $increase = getData($pornstar->id, $date);
+            $increase = getIncreases($pornstar->id, $date);
 
 
         @endphp

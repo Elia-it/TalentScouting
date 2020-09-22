@@ -464,8 +464,8 @@
                 @foreach($all_pornstars as $pornstar)
                     @php
                     $pornController = new \App\Http\Controllers\PornstarController();
-                    $dates = $pornController->getTest($pornstar->id, $date_increase);
-                    $increase = getData($dates);
+                    $dates = $pornController->getDataForIncreases($pornstar->id, $date_increase);
+                    $increase = getIncreases($dates);
                     @endphp
 
                     <tbody class="js-table-sections-header">

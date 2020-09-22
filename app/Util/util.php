@@ -67,7 +67,7 @@ function getIncreaseByPercentual($original_field, $new_field){
         return $res;
 }
 
-function getData($date){
+function getIncreases($date){
 
 //    dd($date['to'], $date['from']);
 

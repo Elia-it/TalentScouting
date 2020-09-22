@@ -14,7 +14,7 @@ class PornstarController extends Controller
     //
     public function index(Request $request){
 
-        $select = 'pornstars.full_name, pornstars.type, pornstars.link_img, pornstars.age, pornstars.joined_date, pornstars.modelhub, pornstars.website, pornstars.twitter, pornstars.instagram, pornstars.fan_centro, last_rec.weekly, last_rec.monthly, last_rec.last_month, last_rec.yearly, last_rec.videos, last_rec.visuals, last_rec.subscribers';
+        $select = 'pornstars.id, pornstars.full_name, pornstars.type, pornstars.link_img, pornstars.age, pornstars.joined_date, pornstars.modelhub, pornstars.website, pornstars.twitter, pornstars.instagram, pornstars.fan_centro, last_rec.weekly, last_rec.monthly, last_rec.last_month, last_rec.yearly, last_rec.videos, last_rec.visuals, last_rec.subscribers';
         $query = Pornstar::join(DB::raw('(
             SELECT
               pornstars_ranks.*
@@ -34,6 +34,7 @@ class PornstarController extends Controller
                 $join->on('pornstars.id', '=', 'last_rec.pornstar_id');
         })
         ->select(explode(', ', $select));
+
 
 
 //      dd($test[8]);
@@ -59,7 +60,7 @@ class PornstarController extends Controller
 
         }
 
-        if($request->has('verifiSELECT pornstars.id, pornstars_ranks.rank_by_date from pornstars_ranks join pornstars ON pornstars.id = pornstars_ranks.pornstar_id GROUP BY pornstars.id ed') && $request->verified == 'on'){
+        if($request->has('verified') && $request->verified == 'on'){
             $query->where('verified', '=', '1');
         }elseif($request->has('not_verified') && $request->not_verified == 'on'){
             $query->where('verified', '=', '0');
@@ -154,6 +155,7 @@ class PornstarController extends Controller
         $all_pornstars = $query->get();
 
 
+
 //        dd($all_pornstars);
 //        var_dump($all_pornstars);
 
@@ -162,27 +164,26 @@ class PornstarController extends Controller
 
 //        die;
         $date_increase = [];
+        $date_increase['from'] = NULL;
+        $date_increase['to'] = NULL;
 
         if($request->has('increase_from') && $request->increase_from != NULL){
             $date_increase['from'] = $request->increase_from;
-        }else{
-            $date_increase['from'] = date('2019-01-01');
         }
         if($request->has('increase_to') && $request->increase_to != NULL){
             $date_increase['to'] = $request->increase_to;
-        }else{
-            $date_increase['to'] = date('Y-m-d');
         }
 
         return view('pornstars', compact('all_pornstars', 'date_increase', 'pages'));
 
     }
 
-    public function getTest($id, $date){
+    public function getDataForIncreases($id, $date){
         if($date['from'] != NULL){
             $from = PornstarRank::where('pornstar_id', $id)->where('rank_by_date', '>=', $date['from'])->orderBy('rank_by_date', 'ASC')->first();
         }else{
             $from = PornstarRank::where('pornstar_id', $id)->orderBy('rank_by_date', 'ASC')->first();
+
         }
 
 

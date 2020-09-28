@@ -11,6 +11,7 @@ class PornstarRank extends Model
 
     public $timestamps = false;
 
+
     protected $fillable = [
         'pornstar_id', 'weekly', 'last_month', 'monthly', 'yearly', 'rank_by_date', 'videos', 'visuals', 'subscribers'
     ];
@@ -20,4 +21,5 @@ class PornstarRank extends Model
     {
         return $this->hasManyThrough('App\Pornstar', 'id', 'pornstar_id');
     }
+
 }

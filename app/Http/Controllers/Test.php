@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Pornstar;
+use http\Client;
+use http\Env;
 use Illuminate\Http\Request;
 use App\simple_html_dom;
+use Illuminate\Support\Facades\Http;
 use Sunra\PhpSimple\HtmlDomParser;
 use App\AmateurModel;
 use App\Pornhub;
@@ -301,14 +304,19 @@ class Test extends Controller
 //        return view('test', compact('all_models'));
     }
 
-    public function test_mo(){
+    public function test(){
 
-        $pornhub = new Pornhub();
-        var_dump($pornhub->testScrape('https://www.pornhub.com/pornstar/jennifer-lawrence'));
-        var_dump($pornhub->testScrape('https://www.pornhub.com/pornstar/lola-taylor'));
-        var_dump($pornhub->testScrape('https://www.pornhub.com/model/eva-elfie'));
-        var_dump($pornhub->testScrape('https://www.pornhub.com/model/triss-merigold'));
-        var_dump($pornhub->testScrape('https://www.pornhub.com/model/laikaanal'));
-        return ;
+        return view('test');
+
+
+
+    }
+
+    public function upload_csv(){
+
+        return view('upload_csv');
+
+
+
     }
 }

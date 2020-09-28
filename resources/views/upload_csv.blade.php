@@ -2,10 +2,10 @@
 
 @section('content')
     <hr>
-    <h1>UPLOAD CSV</h1>
+    <h1>WORKS</h1>
     <hr>
 
-    <form action="{{route('upload_csv')}}" method="post" enctype="multipart/form-data">
+    <form action="{{url('http://127.0.0.1:8000/api/upload_csv')}}" method="post" enctype="multipart/form-data">
         @csrf
         <fieldset>
             <input type="file" name="file" />
